@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Blender work</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" integrity="sha256-46qynGAkLSFpVbEBog43gvNhfrOj+BmwXdxFgVK/Kvc=" crossorigin="anonymous" />  
+        
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,900|Source+Sans+Pro:300,900&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="css/style.css">
+
+        <link rel="icon" href="img/favicon.png">
+
+        <script src="js/three.js"></script>
+
+    </head>
+    <body>
+        <script>
+            const loader = new GLTFLoader();
+            const scene = new THREE.Scene();
+			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+            loader.load('3D-models/cachalot.gltf', function (gltf){
+                scene.add(gltf.scene);
+            }, undefined, function (error) {
+                console.log(error)
+            })
+
+			const geometry = new THREE.BoxGeometry();
+			const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+			const cube = new THREE.Mesh( geometry, material );
+			
+
+			camera.position.z = 5;
+
+			const animate = function () {
+				requestAnimationFrame( animate );
+
+				cube.rotation.x += 0.01;
+				cube.rotation.y += 0.01;
+
+				renderer.render( scene, camera );
+			};
+
+			animate();
+        </script>
+        <header>
+            <button class="nav-toggle" aria-label="toggle navigation">
+                <span class="hamburger"></span>
+            </button>
+            <nav class="nav">
+                <ul class="nav__list">
+                    <li class="nav__item"><a href="index.html" class="nav__link">Home</a></li>
+                    <li class="nav__item"><a href="index.html#services" class="nav__link">My Services</a></li>
+                    <li class="nav__item"><a href="index.html#about" class="nav__link">About me</a></li>
+                    <li class="nav__item"><a href="index.html#work" class="nav__link">My Work</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+
+        <section class="intro">
+            <h1 class="section__title section__title--intro">
+                My <strong>3D modeling</strong> work
+            </h1>
+            <p class="section__subtitle section__subtitle--intro">Blender work for my unity game</p>
+            <img src="img/mod10.jpg" alt="" class="intro__img">
+        </section>
+        
+        <div class="portfolio-item-individual">
+            <p>
+                I learned Blender from in the span of a few months in order to model, texturize, rig and animate
+                all of the game assets for my Unity game. 
+            </p>
+            <p>
+                I intend to use this skill in the future to redesign my website using 3D models with the 
+               three.js library and maybe do freelance work offering 3D website design.
+            </p>
+            <p>
+                We had the idea to do a setting based on the ocean and you can see all of the models I made!
+            </p>
+            
+        </div>
+
+        <!--My work-->
+        <section class="my-work" id="work">
+            <h2 class="section__title">My models</h2>
+            <p class="section__subtitle">All the models I made for my game</p>
+            <br/>
+
+            <div class="portfolio">
+                <!-- Mod1 -->
+                <span class="portfolio__item">
+                    <img src="img/mod1.png" alt="" class="portfolio__img">
+                </span>
+                <!-- Mod2 -->
+                <span class="portfolio__item">
+                    <img src="img/mod2.png" alt="" class="portfolio__img">
+                </span>
+                <!-- Mod3 -->
+                <span class="portfolio__item">
+                    <img src="img/mod3.png" alt="" class="portfolio__img">
+                </span>
+                <!-- Mod4 -->
+                <span class="portfolio__item">
+                    <img src="img/mod4.png" alt="" class="portfolio__img">
+                </span>
+                <!-- Mod5 -->
+                <span class="portfolio__item">
+                    <img src="img/mod5.png" alt="" class="portfolio__img">
+                </span>
+                <!-- Mod6 -->
+                <span class="portfolio__item">
+                    <img src="img/mod6.png" alt="" class="portfolio__img">
+                </span>
+                <!-- Mod7 -->
+                <span class="portfolio__item">
+                    <img src="img/mod7.png" alt="" class="portfolio__img">
+                </span>
+                <!-- Mod8 -->
+                <span class="portfolio__item">
+                    <img src="img/mod8.png" alt="" class="portfolio__img">
+                </span>
+                <!-- Mod9 -->
+                <span class="portfolio__item">
+                    <img src="img/mod9.png" alt="" class="portfolio__img">
+                </span>
+            </div>
+        </section>
+        
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <!-- replace with your own email address -->
+            <a href="mailto:manuelalejandrosac@gmail.com" class="footer__link">manuelalejandrosac@gmail.com</a>
+            <ul class="social-list">
+                <li class="social-list__item">
+                    <a class="social-list__link" href="https://www.linkedin.com/in/manuel-sanchez-2b43801bb/">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </li>
+                <li class="social-list__item">
+                    <a class="social-list__link" href="https://github.com/erzihark">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </li>
+            </ul>
+        </footer>
+        
+        
+        <script src="js/index.js"></script>
+        
+    </body>
+</html>

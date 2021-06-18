@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Manuel Carretero</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" integrity="sha256-46qynGAkLSFpVbEBog43gvNhfrOj+BmwXdxFgVK/Kvc=" crossorigin="anonymous" />  
+        
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,900|Source+Sans+Pro:300,900&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="css/style.css">
+
+        <link rel="icon" href="img/favicon.png">
+
+    </head>
+    <body>
+        <header>
+            <button class="nav-toggle" aria-label="toggle navigation">
+                <span class="hamburger"></span>
+            </button>
+            <nav class="nav">
+                <ul class="nav__list">
+                    <li class="nav_item"><a href="#home" class="nav__link">Home</a></li>
+                    <li class="nav_item"><a href="#services" class="nav__link">My Services</a></li>
+                    <li class="nav_item"><a href="#about" class="nav__link">About me</a></li>
+                    <li class="nav_item"><a href="#work" class="nav__link">My work</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Introduction-->
+        <section class="intro" id="home">
+            <h1 class="section__title section__title--intro">
+                Hi, I am <strong>Manuel Carretero</strong>
+            </h1>
+            <p class="section__subtitle section__subtitle--intro">Junior web developer</p>
+            <img src="img/patio.jpg" alt="Me in the garden" class="intro__img">
+        </section>
+
+        <!-- My services-->
+        <section class="my-services" id="services">
+            <h2 class="section__title section__title--services">What I do</h2>
+            <div class="services">
+                <div class="service">
+                    <i class="fas fa-desktop"></i>
+                    <h3>Frontend</h3>
+                    <p>
+                        I translate design into code with CSS, HTML and JavaScript
+                        and can create a responsive and functional website.
+                        Familiar with frameworks like React and Bootstrap.
+                    </p>
+                </div> <!-- service -->
+
+                <div class="service">
+                    <i class="fas fa-database"></i>
+                    <h3>Backend</h3>
+                    <p>
+                        I can manage information with PostreSQL database as well as link 
+                        and manage the page interface with node.js. I have also worked with
+                        other backend languages such as C#.
+                    </p>
+                </div> <!-- service -->
+
+                <div class="service">
+                    <i class="fas fa-palette"></i>
+                    <h3>Design</h3>
+                    <p>
+                        I design UI elements in Photoshop for a smooth user experience.
+                        Can also design the layout and overall look of applications as well.
+                        Have done 3D modelling, texturing, rigging and animations in Blender
+                        which can work for web applications that employ three.js.
+                              
+                    </p>
+                </div> <!-- service -->
+
+            </div> <!-- services -->
+
+            <a href="#work" class="btn">My Work</a>
+        </section>
+
+        <!--About me-->
+        <section class="about-me" id="about">
+            <h2 class="section__title section__title--about">Who I am</h2>
+            <p class="section__subtitle section__subtitle--about">
+                Web developer and designer located in Puebla, Mexico
+            </p>
+
+            <div class="about-me__body">
+                <p>I'm a mechatronics engineer reprogrammed into a web developer,
+                   I started working in software development in April 2020
+                   and soon after came to the realization it is my vocation, I am
+                   passionate about it.
+                </p>
+                <p>I started working in game development with Unity where I had to
+                   learn everything from scratch, from C# for the backend and core 
+                   functionality of the game, to the visual aspect of it which involved
+                   learning UI/UX design, graphics rendering, and 3D modelling and animations. 
+                </p>
+                <p>
+                    I later started working in Domus-Evo where I redesigned the user
+                    interface for a parking application, as well as implementing functionality
+                    for managing their SQL database and link it to the UI.
+                </p>
+                <p>
+                    I am currently focusing on web development and polishing my Frontend skills.
+                </p>
+                <p></p>
+            </div>
+
+            <img src="img/sho.jpg" alt="Me in the yard" class="about-me__img">
+        </section>
+
+        <!--My work-->
+        <section class="my-work" id="work">
+            <h2 class="section__title">My work</h2>
+            <p class="section__subtitle">Some of the work I've done</p>
+            <br/>
+
+            <div class="portfolio">
+                <!-- Unity work -->
+                <a href="unity.html" class="portfolio__item">
+                    <img src="img/un1.jpg" alt="" class="portfolio__img">
+                </a>
+                <!-- Blender work -->
+                <a href="blender.html" class="portfolio__item">
+                    <img src="img/mod10.jpg" alt="" class="portfolio__img">
+                </a>
+                <!-- Domus worl -->
+                <a href="domus.html" class="portfolio__item">
+                    <img src="img/dom1.png" alt="" class="portfolio__img">
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <a href="mailto:manuelalejandrosac@gmail.com" class="footer__link">manuelalejandrosac@gmail.com</a>
+            <ul class="social-list">
+                <li class="social-list__item">
+                    <a class="social-list__link" href="https://github.com/erzihark">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </li>
+                <li class="social-list__item">
+                    <a class="social-list__link" href="https://www.linkedin.com/in/manuel-sanchez-2b43801bb/">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </li>
+            </ul>
+        </footer>
+
+        <script src="js/index.js"></script>
+
+    </body>
+</html>
