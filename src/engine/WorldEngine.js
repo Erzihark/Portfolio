@@ -5,6 +5,7 @@ export default class WorldEngine {
   constructor(sceneEl, cameraEl, worldRootEl) {
     this.sceneEl = sceneEl;
     this.cameraEl = cameraEl;
+    this.threeCamera = null;
 
     this.THREE = window.AFRAME.THREE;
 
@@ -49,6 +50,10 @@ export default class WorldEngine {
     this.animate();
 
     emitter.emit('world-ready');
+
+    setTimeout(() => {
+      this.threeCamera = this.cameraEl.getObject3D('camera');
+    }, 0);
   }
 
   createPlayer() {
@@ -134,7 +139,7 @@ export default class WorldEngine {
   }
 
   updatePlanetGlow() {
-    const camera = this.cameraEl.getObject3D('camera');
+    const camera = this.cameraEl.components.camera?.camera;
 
     if (!camera) return;
 
@@ -142,22 +147,63 @@ export default class WorldEngine {
 
     camera.getWorldDirection(cameraForward);
 
+    const cameraWorldPos = new this.THREE.Vector3();
+
+    camera.getWorldPosition(cameraWorldPos);
+
+    // HOME PLANET DEPTH
+    const homePlanet = this.planets[0];
+
+    const homeWorldPos = new this.THREE.Vector3();
+
+    homePlanet.mesh.getWorldPosition(homeWorldPos);
+
+    const homeDistance = cameraWorldPos.distanceTo(homeWorldPos);
+
+    let bestPlanet = null;
+    let bestAlignment = 0.9;
+
     this.planets.forEach((planet) => {
+      if (planet === homePlanet) {
+        planet.isTargetable = false;
+        return;
+      }
+
       const planetWorldPos = new this.THREE.Vector3();
 
       planet.mesh.getWorldPosition(planetWorldPos);
 
-      const toPlanet = planetWorldPos.clone().sub(camera.position).normalize();
+      // MUST be closer than home planet
+      const distance = cameraWorldPos.distanceTo(planetWorldPos);
+
+      if (distance >= homeDistance) {
+        planet.isTargetable = false;
+        return;
+      }
+
+      // centered on screen
+      const toPlanet = planetWorldPos.clone().sub(cameraWorldPos).normalize();
 
       const alignment = cameraForward.dot(toPlanet);
 
-      const isTargetable = alignment > 0.93;
+      // keep BEST candidate only
+      if (alignment > bestAlignment) {
+        bestAlignment = alignment;
+        bestPlanet = planet;
+      }
+
+      planet.isTargetable = false;
+    });
+
+    // apply visuals
+    this.planets.forEach((planet) => {
+      const isTargetable = planet === bestPlanet;
 
       planet.isTargetable = isTargetable;
 
-      planet.mesh.material.emissive.setHex(isTargetable ? 0x3355ff : 0x000000);
+      planet.mesh.scale.setScalar(isTargetable ? 1.15 : 1);
 
-      planet.mesh.material.emissiveIntensity = isTargetable ? 1.5 : 0;
+      planet.glowSprite.material.opacity = isTargetable ? 0.35 : 0;
     });
   }
 
@@ -189,19 +235,21 @@ export default class WorldEngine {
   }
 
   onClick = (event) => {
+    if (!this.threeCamera) return;
+
     this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
 
     this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    this.raycaster.setFromCamera(this.pointer, this.cameraEl.getObject3D('camera'));
+    this.raycaster.setFromCamera(this.pointer, this.threeCamera);
 
-    const meshes = this.planets.map((p) => p.mesh);
+    const meshes = this.planets.map((planet) => planet.mesh);
 
-    const hits = this.raycaster.intersectObjects(meshes);
+    const intersections = this.raycaster.intersectObjects(meshes);
 
-    if (!hits.length) return;
+    if (!intersections.length) return;
 
-    const planet = hits[0].object.userData.planet;
+    const planet = intersections[0].object.userData.planet;
 
     if (!planet?.isTargetable) return;
 

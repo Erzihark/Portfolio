@@ -19,11 +19,23 @@ export default class PlanetFactory {
 
     this.scene.add(mesh);
 
+    const spriteMaterial = new this.THREE.SpriteMaterial({
+      color,
+      transparent: true,
+      opacity: 0
+    });
+
+    const glowSprite = new this.THREE.Sprite(spriteMaterial);
+
+    glowSprite.scale.set(size * 3, size * 3, 1);
+
+    mesh.add(glowSprite);
+
     const planet = {
       id,
       mesh,
       radius: size,
-
+      glowSprite,
       isTargetable: false,
       isActive: false
     };

@@ -34,8 +34,6 @@ export default class InputController {
   }
 
   onPointerDown = (e) => {
-    console.log('DOWN');
-
     this.isDragging = true;
 
     this.previousPointer.x = e.clientX;

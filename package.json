@@ -14,6 +14,7 @@
         "image-preloader": "^1.1.1",
         "mitt": "^3.0.1",
         "promise-defer": "^1.0.0",
+        "video.js": "^8.23.7",
         "vue": "^3.3.4"
     },
     "devDependencies": {
