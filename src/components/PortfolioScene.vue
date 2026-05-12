@@ -1,5 +1,11 @@
 <template>
-    <a-scene ref="scene" embedded vr-mode-ui="enabled: false">
+    <a-scene
+        ref="scene"
+        embedded
+        vr-mode-ui="enabled: false"
+        bloom-system
+        renderer="sortObjects: true;"
+    >
         <!-- WORLD ROOT -->
         <a-entity ref="worldRoot"></a-entity>
 
@@ -24,6 +30,7 @@
 import WorldEngine from '@/engine/WorldEngine';
 import NavigationSystem from '@/engine/NavigationSystem';
 import InputController from '@/engine/InputController';
+import '../engine/effects/Bloom.js';
 
 export default {
     mounted() {

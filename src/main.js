@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import CONFIG from './config';
 import mitt from 'mitt';
+import 'aframe';
 
 const parse = (val) => {
   let result = false;

@@ -1,15 +1,15 @@
+import * as THREE from 'three';
 export default class InputController {
   constructor(sceneEl, world) {
     this.sceneEl = sceneEl;
     this.world = world;
-
-    this.THREE = window.AFRAME.THREE;
+    //this.THREE = window.AFRAME.THREE;
 
     this.isDragging = false;
 
     this.previousPointer = { x: 0, y: 0 };
 
-    this.rotationVelocity = new this.THREE.Vector2();
+    this.rotationVelocity = new THREE.Vector2();
 
     this.dragSensitivity = 0.00032;
 

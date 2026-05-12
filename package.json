@@ -11,9 +11,11 @@
     },
     "dependencies": {
         "@vitejs/plugin-basic-ssl": "^2.3.0",
+        "aframe": "^1.7.1",
         "image-preloader": "^1.1.1",
         "mitt": "^3.0.1",
         "promise-defer": "^1.0.0",
+        "three": "^0.175.0",
         "video.js": "^8.23.7",
         "vue": "^3.3.4"
     },

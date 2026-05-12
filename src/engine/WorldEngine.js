@@ -1,5 +1,7 @@
 import emitter from '../services/emitter.service';
 import PlanetFactory from './PlanetFactory';
+import * as THREE from 'three';
+import AFRAME from 'aframe';
 
 export default class WorldEngine {
   constructor(sceneEl, cameraEl, worldRootEl) {
@@ -7,11 +9,11 @@ export default class WorldEngine {
     this.cameraEl = cameraEl;
     this.threeCamera = null;
 
-    this.THREE = window.AFRAME.THREE;
+    //this.THREE = window.AFRAME.THREE;
 
     this.scene = sceneEl.object3D;
 
-    this.clock = new this.THREE.Clock();
+    this.clock = new THREE.Clock();
 
     this.planets = [];
 
@@ -30,9 +32,15 @@ export default class WorldEngine {
 
     this.worldRoot = worldRootEl.object3D;
 
-    this.raycaster = new this.THREE.Raycaster();
+    this.raycaster = new THREE.Raycaster();
 
-    this.pointer = new this.THREE.Vector2();
+    this.pointer = new THREE.Vector2();
+
+    this.tmpCameraForward = new THREE.Vector3();
+    this.tmpCameraWorldPos = new THREE.Vector3();
+    this.tmpHomeWorldPos = new THREE.Vector3();
+    this.tmpPlanetWorldPos = new THREE.Vector3();
+    this.tmpToPlanet = new THREE.Vector3();
   }
 
   init({ navigation, input }) {
@@ -57,13 +65,13 @@ export default class WorldEngine {
   }
 
   createPlayer() {
-    const geometry = new this.THREE.CapsuleGeometry(0.3, 1.0, 4, 8);
+    const geometry = new THREE.CapsuleGeometry(0.3, 1.0, 4, 8);
 
-    const material = new this.THREE.MeshStandardMaterial({
+    const material = new THREE.MeshStandardMaterial({
       color: 0xffffff
     });
 
-    this.player = new this.THREE.Mesh(geometry, material);
+    this.player = new THREE.Mesh(geometry, material);
 
     this.scene.add(this.player);
   }
@@ -91,11 +99,11 @@ export default class WorldEngine {
   }
 
   placePlayerOnPlanet(planet) {
-    const worldPos = new this.THREE.Vector3();
+    const worldPos = new THREE.Vector3();
 
     planet.mesh.getWorldPosition(worldPos);
 
-    const offset = new this.THREE.Vector3(0, planet.radius + 1.2, 0);
+    const offset = new THREE.Vector3(0, planet.radius + 1.2, 0);
 
     const finalPos = worldPos.clone().add(offset);
 
@@ -105,13 +113,13 @@ export default class WorldEngine {
   }
 
   setupLighting() {
-    this.directional = new this.THREE.DirectionalLight(0xffffff, 1.5);
+    this.directional = new THREE.DirectionalLight(0xffffff, 1.5);
 
     this.directional.position.set(5, 10, 7);
 
     this.scene.add(this.directional);
 
-    this.ambient = new this.THREE.AmbientLight(0x404040, 2);
+    this.ambient = new THREE.AmbientLight(0x404040, 2);
 
     this.scene.add(this.ambient);
   }
@@ -143,18 +151,25 @@ export default class WorldEngine {
 
     if (!camera) return;
 
-    const cameraForward = new this.THREE.Vector3();
+    // Reused vectors
+    const cameraForward = this.tmpCameraForward;
 
+    const cameraWorldPos = this.tmpCameraWorldPos;
+
+    const homeWorldPos = this.tmpHomeWorldPos;
+
+    const planetWorldPos = this.tmpPlanetWorldPos;
+
+    const toPlanet = this.tmpToPlanet;
+
+    // Camera direction
     camera.getWorldDirection(cameraForward);
 
-    const cameraWorldPos = new this.THREE.Vector3();
-
+    // Camera position
     camera.getWorldPosition(cameraWorldPos);
 
-    // HOME PLANET DEPTH
+    // Home planet
     const homePlanet = this.planets[0];
-
-    const homeWorldPos = new this.THREE.Vector3();
 
     homePlanet.mesh.getWorldPosition(homeWorldPos);
 
@@ -169,11 +184,8 @@ export default class WorldEngine {
         return;
       }
 
-      const planetWorldPos = new this.THREE.Vector3();
-
       planet.mesh.getWorldPosition(planetWorldPos);
 
-      // MUST be closer than home planet
       const distance = cameraWorldPos.distanceTo(planetWorldPos);
 
       if (distance >= homeDistance) {
@@ -181,12 +193,10 @@ export default class WorldEngine {
         return;
       }
 
-      // centered on screen
-      const toPlanet = planetWorldPos.clone().sub(cameraWorldPos).normalize();
+      toPlanet.copy(planetWorldPos).sub(cameraWorldPos).normalize();
 
       const alignment = cameraForward.dot(toPlanet);
 
-      // keep BEST candidate only
       if (alignment > bestAlignment) {
         bestAlignment = alignment;
         bestPlanet = planet;
@@ -195,7 +205,6 @@ export default class WorldEngine {
       planet.isTargetable = false;
     });
 
-    // apply visuals
     this.planets.forEach((planet) => {
       const isTargetable = planet === bestPlanet;
 
@@ -203,12 +212,22 @@ export default class WorldEngine {
 
       planet.mesh.scale.setScalar(isTargetable ? 1.15 : 1);
 
-      planet.glowSprite.material.opacity = isTargetable ? 0.35 : 0;
+      if (isTargetable) {
+        planet.mesh.material.color.set('#222222');
+
+        planet.mesh.material.emissive.set('#00ffff');
+
+        planet.mesh.material.emissiveIntensity = 1;
+      } else {
+        planet.mesh.material.emissiveIntensity = 0;
+
+        planet.mesh.material.color.set(planet.ogColor);
+      }
     });
   }
 
   updatePlanetTransition() {
-    const targetPos = new this.THREE.Vector3();
+    const targetPos = new THREE.Vector3();
 
     this.targetPlanet.mesh.getWorldPosition(targetPos);
 

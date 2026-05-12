@@ -23,7 +23,6 @@
 
 <script>
 import CONFIG from '@/config';
-
 import defer from 'promise-defer';
 import Preloader from '@/services/preloader.service';
 import SoundManager from '@/services/sound-manager.service';

@@ -12,32 +12,34 @@ export default defineConfig({
         }
       }
     }),
+
     basicSsl()
   ],
+
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
+
+  optimizeDeps: {
+    exclude: ['aframe', 'three']
+  },
+
   build: {
     chunkSizeWarningLimit: 1000,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'vendor-libs-main': ['image-preloader', 'mitt', 'promise-defer', 'vue']
-        },
-        entryFileNames: `assets/[name].js`,
-        chunkFileNames: `assets/[name].js`,
-        assetFileNames: `assets/[name].[ext]`
-      }
-    },
+
     commonjsOptions: {
       include: []
+    },
+
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
+      }
     }
   },
-  optimizeDeps: {
-    disabled: false
-  },
+
   server: {
     https: true
   }
