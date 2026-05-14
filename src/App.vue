@@ -6,15 +6,9 @@
             'wrapper--desktop': !isMobile
         }"
     >
-        <div class="background-overlay"></div>
         <base-spinner v-if="spinner"></base-spinner>
 
         <template v-if="ready">
-            <base-video
-                :videoSrc="videoSettings.video.src"
-                :isMobile="isMobile"
-                :props="videoSettings.props"
-            />
             <portfolio-scene />
             <portfolio-overlay />
         </template>
@@ -29,7 +23,6 @@ import SoundManager from '@/services/sound-manager.service';
 import BaseSpinner from '@/components/BaseSpinner.vue';
 import PortfolioScene from './components/PortfolioScene.vue';
 import PortfolioOverlay from './components/PortfolioOverlay.vue';
-import BaseVideo from './components/BaseVideo.vue';
 
 export default {
     name: 'App',
@@ -37,12 +30,10 @@ export default {
     data() {
         return {
             assets: CONFIG.assets,
-            videoSettings: CONFIG.settings.video,
             ready: false,
             spinner: true,
             defers: {
-                imagesReady: new defer(),
-                videosReady: new defer()
+                imagesReady: new defer()
             },
             isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
                 navigator.userAgent
@@ -83,7 +74,7 @@ export default {
 
         this.setPreloader();
 
-        Promise.all([this.defers.imagesReady.promise, this.defers.videosReady.promise]).then(() => {
+        Promise.all([this.defers.imagesReady.promise]).then(() => {
             this.onDataReady();
         });
     },
@@ -109,17 +100,6 @@ export default {
                 error() {
                     console.log('Failed to load one or more images!');
                     vm.defers.imagesReady.resolve();
-                }
-            });
-
-            Preloader.bind('videos', vm.assets.videos.preload, {
-                complete() {
-                    console.log('Videos preloaded!');
-                    vm.defers.videosReady.resolve();
-                },
-                error() {
-                    console.log('Failed to load one or more videos!');
-                    vm.defers.videosReady.resolve();
                 }
             });
 
@@ -149,8 +129,7 @@ export default {
     components: {
         BaseSpinner,
         PortfolioScene,
-        PortfolioOverlay,
-        BaseVideo
+        PortfolioOverlay
     }
 };
 </script>
@@ -182,16 +161,6 @@ body {
     margin: 0px auto;
     overflow: hidden;
     position: relative;
-
-    .background-overlay {
-        position: fixed;
-        inset: 0;
-
-        background: radial-gradient(circle, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.55) 100%);
-
-        pointer-events: none;
-        z-index: 1;
-    }
 
     &__exit,
     &__intro,

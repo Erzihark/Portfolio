@@ -1,12 +1,17 @@
 <template>
-    <div class="animation" ref="animation"></div>
+    <div v-if="hasTransition">
+        <Transition name="fade" @leave="stopLottie">
+            <div v-if="!hasElapsed" class="animation" ref="animation"></div>
+        </Transition>
+    </div>
+    <div v-else class="animation" ref="animation"></div>
 </template>
 
 <script>
 export default {
     name: 'BaseAnimation',
 
-    props: ['type', 'options'],
+    props: ['type', 'loop', 'hasTransition', 'hasElapsed'],
 
     data() {
         return {
@@ -23,7 +28,7 @@ export default {
             const options = {
                 container: this.$refs.animation,
                 renderer: 'svg',
-                loop: false,
+                loop: this.loop,
                 autoplay: true,
                 path: '/animations/' + this.type + '.json'
             };
@@ -35,6 +40,18 @@ export default {
             };
 
             this.$emit('onReady', this.animation);
+        },
+        stopLottie() {
+            if (this.animation) {
+                this.animation.stop();
+            }
+        }
+    },
+
+    beforeUnmount() {
+        if (this.animation) {
+            this.animation.destroy();
+            this.animation = null;
         }
     }
 };
@@ -42,7 +59,17 @@ export default {
 
 <style lang="scss">
 .animation {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    width: 8vw;
+    height: 8vw;
+}
+
+.fade-leave-active {
+    transition: opacity 1.5s ease;
+}
+.fade-leave-to {
+    opacity: 0;
 }
 </style>

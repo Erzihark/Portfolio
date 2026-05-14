@@ -4,7 +4,7 @@ import CONFIG from './config';
 import mitt from 'mitt';
 import FPSCounter from './services/fps-display.service';
 
-new FPSCounter();
+//new FPSCounter();
 
 const parse = (val) => {
   let result = false;

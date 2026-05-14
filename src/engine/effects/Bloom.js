@@ -33,17 +33,14 @@ export default class Bloom {
       0.2
     );
 
-    this.bloomPass.threshold = 0.15;
-    this.bloomPass.strength = 0.8;
-    this.bloomPass.radius = 0.4;
+    this.bloomPass.threshold = 0.0;
+    this.bloomPass.strength = 1.6;
+    this.bloomPass.radius = 0.6;
 
     this.composer.addPass(this.bloomPass);
   }
 
   render() {
-    this.renderer.setRenderTarget(null);
-    this.renderer.clearDepth();
-
     this.composer.render();
   }
 

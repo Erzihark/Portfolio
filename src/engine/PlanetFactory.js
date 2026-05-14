@@ -1,84 +1,119 @@
 import * as THREE from 'three';
+import ModelLoader from './loaders/ModelLoader';
+import { normalizeModel } from './utils/normalize-model.util';
+
+const BLOOM_LAYER = 1;
+
 export default class PlanetFactory {
   constructor(scene) {
     this.scene = scene;
+    this.loader = new ModelLoader();
   }
 
-  createPlanet({ id, position, color, size }) {
-    const geometry = new THREE.SphereGeometry(size, 32, 32);
-
-    const material = new THREE.MeshStandardMaterial({
-      color,
-      emissive: 0x000000,
-      emissiveIntensity: 0
-    });
-
-    const mesh = new THREE.Mesh(geometry, material);
+  async createPlanet({
+    id,
+    modelPath,
+    position,
+    size = 1,
+    emissive = 0xffffff,
+    emissiveIntensity = 1.5
+  }) {
+    const mesh = await this.loader.load(modelPath);
 
     mesh.position.copy(position);
+    normalizeModel(mesh, size);
 
-    this.scene.add(mesh);
+    mesh.traverse((child) => {
+      if (!child.isMesh) return;
 
-    const spriteMaterial = new THREE.SpriteMaterial({
-      color,
-      transparent: true,
-      opacity: 0
+      child.layers.enable(BLOOM_LAYER);
+
+      const materials = Array.isArray(child.material) ? child.material : [child.material];
+
+      materials.forEach((material) => {
+        if (!material) return;
+
+        if (material.isMeshStandardMaterial || material.isMeshPhysicalMaterial) {
+          material.toneMapped = true;
+
+          // preserve original texture/color
+          material.color.multiplyScalar(1);
+
+          // preserve original emissive if it exists
+          const originalEmissive = material.emissive
+            ? material.emissive.clone()
+            : new THREE.Color(0x000000);
+
+          // mix original emissive with planet glow color
+          material.emissive = originalEmissive.lerp(new THREE.Color(emissive), 0.35);
+
+          // THIS is the important part
+          material.emissiveIntensity = emissiveIntensity;
+
+          // improve HDR response
+          material.envMapIntensity = 1.5;
+
+          material.needsUpdate = true;
+        }
+      });
     });
 
-    // const glowSprite = new this.THREE.Sprite(spriteMaterial);
-
-    // glowSprite.scale.set(size * 3, size * 3, 1);
-
-    // mesh.add(glowSprite);
+    this.scene.add(mesh);
 
     const planet = {
       id,
       mesh,
       radius: size,
-      //glowSprite,
-      ogColor: color,
       isTargetable: false,
       isActive: false
     };
 
-    mesh.userData.planet = planet;
+    mesh.traverse((child) => {
+      if (child.isMesh) {
+        child.userData.planet = planet;
+      }
+    });
 
     return planet;
   }
 
-  createCenterPlanet() {
+  async createCenterPlanet() {
     return this.createPlanet({
       id: 'home',
+      modelPath: '/models/center.glb',
       position: new THREE.Vector3(0, 0, 0),
-      color: 0x4444ff,
-      size: 4
+      size: 4,
+      emissive: 0x4444ff
     });
   }
 
-  createProjectsPlanet() {
+  async createProjectsPlanet() {
     return this.createPlanet({
       id: 'projects',
+      modelPath: '/models/projects.glb',
       position: new THREE.Vector3(8, 0, 0),
-      color: 0xff4444,
-      size: 1.5
+      size: 1.5,
+      emissive: 0xff4444
     });
   }
 
-  createSkillsPlanet() {
+  async createSkillsPlanet() {
     return this.createPlanet({
       id: 'skills',
+      modelPath: '/models/skills.glb',
       position: new THREE.Vector3(-8, 0, 0),
-      color: 0x44ff44,
-      size: 1.5
+      size: 1.5,
+      emissive: 0x44ff44
     });
   }
 
-  createExperiencePlanet() {
+  async createExperiencePlanet() {
     return this.createPlanet({
       id: 'experience',
+      modelPath: '/models/experience.glb',
       position: new THREE.Vector3(0, 0, -10),
-      color: 0xffff44,
-      size: 1.5
+      size: 1.5,
+      emissive: 0xffff44
     });
   }
 }

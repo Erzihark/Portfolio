@@ -8,7 +8,6 @@ import * as THREE from 'three';
 import WorldEngine from '@/engine/WorldEngine';
 import NavigationSystem from '@/engine/NavigationSystem';
 import InputController from '@/engine/InputController';
-import Bloom from '@/engine/effects/Bloom';
 
 export default {
     mounted() {
@@ -31,7 +30,8 @@ export default {
             // Renderer
 
             this.renderer = new THREE.WebGLRenderer({
-                alpha: true
+                alpha: true,
+                premultipliedAlpha: false
             });
 
             this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -40,9 +40,9 @@ export default {
 
             this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 
+            this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            this.renderer.toneMappingExposure = 1;
             this.renderer.outputColorSpace = THREE.SRGBColorSpace;
-
-            this.renderer.toneMapping = THREE.NoToneMapping;
 
             this.$refs.container.appendChild(this.renderer.domElement);
 
@@ -53,7 +53,6 @@ export default {
             this.scene.background = null;
 
             // Camera
-
             this.camera = new THREE.PerspectiveCamera(
                 75,
                 window.innerWidth / window.innerHeight,
@@ -64,25 +63,21 @@ export default {
             this.camera.position.set(0, 0, 22);
 
             // World root
+            this.skyRoot = new THREE.Group();
+            this.scene.add(this.skyRoot);
 
             this.worldRoot = new THREE.Group();
-
             this.scene.add(this.worldRoot);
-
-            // Debug cube
-
-            const cube = new THREE.Mesh(
-                new THREE.BoxGeometry(),
-                new THREE.MeshBasicMaterial({
-                    color: 'red'
-                })
-            );
-
-            this.scene.add(cube);
         },
 
         initialize() {
-            this.world = new WorldEngine(this.scene, this.camera, this.worldRoot, this.renderer);
+            this.world = new WorldEngine(
+                this.scene,
+                this.camera,
+                this.worldRoot,
+                this.skyRoot,
+                this.renderer
+            );
 
             this.nav = new NavigationSystem(this.world);
 
@@ -106,17 +101,3 @@ export default {
     }
 };
 </script>
-<style lang="scss" scoped>
-.three-container {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-}
-
-.three-container canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
-    background: transparent !important;
-}
-</style>

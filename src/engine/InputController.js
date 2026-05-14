@@ -24,41 +24,55 @@ export default class InputController {
   bindEvents() {
     const canvas = this.renderer.domElement;
 
-    canvas.addEventListener('pointerdown', this.onPointerDown);
+    canvas.style.touchAction = 'none';
 
-    window.addEventListener('pointermove', this.onPointerMove);
+    canvas.addEventListener('pointerdown', this.onPointerDown, { passive: false });
+
+    window.addEventListener('pointermove', this.onPointerMove, { passive: false });
 
     window.addEventListener('pointerup', this.onPointerUp);
   }
 
   onPointerDown = (e) => {
+    e.preventDefault();
+
+    // Ignore second finger
+    if (!e.isPrimary) return;
+
     this.isDragging = true;
 
     this.previousPointer.x = e.clientX;
     this.previousPointer.y = e.clientY;
+
+    this.renderer.domElement.setPointerCapture(e.pointerId);
   };
 
   onPointerMove = (e) => {
     if (!this.isDragging) return;
 
-    const deltaX = e.clientX - this.previousPointer.x;
+    e.preventDefault();
 
+    const deltaX = e.clientX - this.previousPointer.x;
     const deltaY = e.clientY - this.previousPointer.y;
 
     this.previousPointer.x = e.clientX;
     this.previousPointer.y = e.clientY;
 
-    this.rotationVelocity.x += deltaY * this.dragSensitivity;
+    // Mobile-friendly sensitivity
+    const mobileMultiplier = e.pointerType === 'touch' ? 1.8 : 1;
 
-    this.rotationVelocity.y += deltaX * this.dragSensitivity;
+    this.rotationVelocity.x += deltaY * this.dragSensitivity * mobileMultiplier;
+    this.rotationVelocity.y += deltaX * this.dragSensitivity * mobileMultiplier;
 
     if (this.world?.isRunning) {
       this.world.player.rotation.z = Math.sin(performance.now() * 0.02) * 0.15;
     }
   };
 
-  onPointerUp = () => {
+  onPointerUp = (e) => {
     this.isDragging = false;
+
+    this.renderer.domElement.releasePointerCapture(e.pointerId);
   };
 
   update() {

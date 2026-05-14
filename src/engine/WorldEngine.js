@@ -1,15 +1,16 @@
 import emitter from '../services/emitter.service';
 import PlanetFactory from './PlanetFactory';
 import Bloom from './effects/Bloom';
+import ModelLoader from './loaders/ModelLoader';
 import * as THREE from 'three';
 
-const BLOOM_LAYER = 1;
 export default class WorldEngine {
-  constructor(scene, camera, worldRoot, renderer) {
+  constructor(scene, camera, worldRoot, skyRoot, renderer) {
     this.scene = scene;
     this.camera = camera;
     this.renderer = renderer;
     this.worldRoot = worldRoot;
+    this.skyRoot = skyRoot;
 
     this.clock = new THREE.Clock();
 
@@ -18,6 +19,10 @@ export default class WorldEngine {
 
     this.player = null;
     this.playerAngle = 0;
+    this.playerFloatTime = 0;
+    this.tmpUp = new THREE.Vector3();
+    this.tmpForward = new THREE.Vector3();
+    this.playerCorrectionQuaternion = new THREE.Quaternion();
 
     this.navigation = null;
     this.input = null;
@@ -36,39 +41,101 @@ export default class WorldEngine {
     this.tmpHomeWorldPos = new THREE.Vector3();
     this.tmpPlanetWorldPos = new THREE.Vector3();
     this.tmpToPlanet = new THREE.Vector3();
+
+    this.modelLoader = new ModelLoader();
   }
 
-  init({ navigation, input }) {
+  async init({ navigation, input }) {
     this.navigation = navigation;
     this.input = input;
 
-    this.createPlayer();
-    this.createPlanets();
+    this.createBackground();
+    await this.createPlayer();
+    await this.createPlanets();
     this.bindPlanetSelection();
     this.setInitialPlanet();
     this.setupLighting();
+
+    // const test = new THREE.Mesh(
+    //   new THREE.SphereGeometry(1, 32, 32),
+    //   new THREE.MeshStandardMaterial({
+    //     color: 0x000000,
+    //     emissive: 0x00ffff,
+    //     emissiveIntensity: 50
+    //   })
+    // );
+
+    // test.position.set(10, 10, 10);
+
+    // this.scene.add(test);
 
     this.animate();
 
     emitter.emit('world-ready');
   }
 
-  createPlayer() {
-    const geometry = new THREE.CapsuleGeometry(0.3, 1.0, 4, 8);
+  createBackground() {
+    const textureLoader = new THREE.TextureLoader();
 
-    const material = new THREE.MeshStandardMaterial({
-      color: 0xffffff
+    const skyTexture = textureLoader.load('/images/environment.jpg');
+
+    skyTexture.colorSpace = THREE.SRGBColorSpace;
+
+    const skyGeometry = new THREE.SphereGeometry(30, 64, 64);
+
+    const skyMaterial = new THREE.MeshBasicMaterial({
+      map: skyTexture,
+      side: THREE.BackSide,
+      toneMapped: false
     });
 
-    this.player = new THREE.Mesh(geometry, material);
+    this.sky = new THREE.Mesh(skyGeometry, skyMaterial);
+
+    // darker
+    this.sky.material.color.setScalar(0.3);
+
+    this.skyRoot.add(this.sky);
+
+    this.skyTargetRotationY = 0;
+  }
+
+  async createPlayer() {
+    const gltf = await this.modelLoader.loader.loadAsync('/models/ship.glb');
+
+    this.player = gltf.scene;
+
+    this.player.scale.setScalar(0.8);
+
+    this.playerCorrectionQuaternion.setFromEuler(new THREE.Euler(0, Math.PI / 2, Math.PI / 2));
+
+    this.player.traverse((child) => {
+      if (!child.isMesh) return;
+
+      child.layers.disable(1);
+
+      if (child.material) {
+        child.material.emissiveIntensity = 0;
+      }
+    });
+
+    // animation setup
+    this.playerMixer = new THREE.AnimationMixer(this.player);
+
+    if (gltf.animations.length) {
+      gltf.animations.forEach((clip) => {
+        const action = this.playerMixer.clipAction(clip);
+
+        action.play();
+      });
+    }
 
     this.scene.add(this.player);
   }
 
-  createPlanets() {
+  async createPlanets() {
     const factory = new PlanetFactory(this.worldRoot);
 
-    this.planets = [
+    this.planets = await Promise.all([
       factory.createCenterPlanet(),
 
       factory.createProjectsPlanet(),
@@ -76,7 +143,7 @@ export default class WorldEngine {
       factory.createSkillsPlanet(),
 
       factory.createExperiencePlanet()
-    ];
+    ]);
   }
 
   setInitialPlanet() {
@@ -89,16 +156,34 @@ export default class WorldEngine {
 
   placePlayerOnPlanet(planet) {
     const worldPos = new THREE.Vector3();
-
     planet.mesh.getWorldPosition(worldPos);
 
-    const offset = new THREE.Vector3(0, planet.radius + 1.2, 0);
+    this.playerFloatTime += 0.03;
 
-    const finalPos = worldPos.clone().add(offset);
+    const hoverOffset = Math.sin(this.playerFloatTime) * 0.15;
+
+    // Direction from planet center outward
+    const up = this.tmpUp.copy(this.player.position).sub(worldPos).normalize();
+
+    // If player starts at center, fallback
+    if (up.lengthSq() === 0) {
+      up.set(0, 1, 0);
+    }
+
+    // Position player above planet surface
+    const finalPos = worldPos.clone().add(up.multiplyScalar(planet.radius + 1.2 + hoverOffset));
 
     this.player.position.copy(finalPos);
 
-    this.player.lookAt(worldPos);
+    // Make ship face away from planet
+    const outward = this.tmpForward.copy(finalPos).sub(worldPos).normalize();
+
+    const target = finalPos.clone().add(outward);
+
+    this.player.lookAt(target);
+
+    // Apply model correction
+    this.player.quaternion.multiply(this.playerCorrectionQuaternion);
   }
 
   setupLighting() {
@@ -127,6 +212,16 @@ export default class WorldEngine {
     }
   }
 
+  updateSky() {
+    if (!this.input) return;
+
+    // tiny horizontal movement only
+    this.skyTargetRotationY += this.input.rotationVelocity.y * 0.03;
+
+    // smooth lag
+    this.skyRoot.rotation.y += (this.skyTargetRotationY - this.skyRoot.rotation.y) * 0.02;
+  }
+
   travelToPlanet(planet) {
     if (planet === this.activePlanet) return;
 
@@ -148,7 +243,6 @@ export default class WorldEngine {
     camera.getWorldPosition(cameraWorldPos);
 
     const homePlanet = this.planets[0];
-
     homePlanet.mesh.getWorldPosition(homeWorldPos);
 
     const homeDistance = cameraWorldPos.distanceTo(homeWorldPos);
@@ -190,40 +284,68 @@ export default class WorldEngine {
 
       planet.mesh.scale.setScalar(isTargetable ? 1.15 : 1);
 
-      if (isTargetable) {
-        planet.mesh.material.color.set('#222222');
-        planet.mesh.material.emissive.set('#00ffff');
-        planet.mesh.material.emissiveIntensity = 1;
+      planet.mesh.traverse((child) => {
+        if (!child.isMesh || !child.material) return;
 
-        //planet.mesh.layers.enable(BLOOM_LAYER);
-      } else {
-        planet.mesh.material.emissiveIntensity = 0;
-        planet.mesh.material.color.set(planet.ogColor);
+        const materials = Array.isArray(child.material) ? child.material : [child.material];
 
-        //planet.mesh.layers.disable(BLOOM_LAYER);
-      }
+        materials.forEach((material) => {
+          if (!material) return;
+
+          const supportsEmissive =
+            material.isMeshStandardMaterial || material.isMeshPhysicalMaterial;
+
+          if (!supportsEmissive) return;
+
+          if (!material.emissive) {
+            material.emissive = new THREE.Color(0x000000);
+          }
+
+          if (isTargetable) {
+            material.emissive.set(0x00ffff);
+            material.emissiveIntensity = 10;
+          } else {
+            material.emissiveIntensity = 0.1;
+          }
+
+          material.needsUpdate = true;
+        });
+      });
     });
   }
 
   updatePlanetTransition() {
-    const targetPos = new THREE.Vector3();
+    const targetWorldPos = new THREE.Vector3();
 
-    this.targetPlanet.mesh.getWorldPosition(targetPos);
+    this.targetPlanet.mesh.getWorldPosition(targetWorldPos);
 
-    targetPos.y += this.targetPlanet.radius + 1.2;
+    // Direction from target planet outward
+    const outward = this.player.position.clone().sub(targetWorldPos).normalize();
 
+    const targetPos = targetWorldPos
+      .clone()
+      .add(outward.multiplyScalar(this.targetPlanet.radius + 1.2));
+
+    // Smooth movement
     this.player.position.lerp(targetPos, 0.05);
 
-    // rotate world so target centers
-    const targetRotationY = -this.targetPlanet.mesh.position.x * 0.08;
+    // FACE MOVEMENT DIRECTION
+    const moveDirection = targetPos.clone().sub(this.player.position).normalize();
 
-    this.worldRoot.rotation.y += (targetRotationY - this.worldRoot.rotation.y) * 0.05;
+    const lookTarget = this.player.position.clone().add(moveDirection);
+
+    this.player.lookAt(lookTarget);
+
+    this.player.rotateZ(Math.PI / 2);
+    this.player.rotateY(Math.PI / 2);
+
+    // Apply correction
+    this.player.quaternion.multiply(this.playerCorrectionQuaternion);
 
     const distance = this.player.position.distanceTo(targetPos);
 
     if (distance < 0.05) {
       this.activePlanet = this.targetPlanet;
-
       this.isTransitioning = false;
     }
   }
@@ -241,7 +363,7 @@ export default class WorldEngine {
 
     const meshes = this.planets.map((planet) => planet.mesh);
 
-    const intersections = this.raycaster.intersectObjects(meshes);
+    const intersections = this.raycaster.intersectObjects(meshes, true);
 
     if (!intersections.length) return;
 
@@ -251,12 +373,6 @@ export default class WorldEngine {
 
     this.travelToPlanet(planet);
   };
-
-  updateTimeOfDay() {
-    this.time += this.clock.getDelta() * 0.15;
-
-    this.directional.position.set(Math.sin(this.time) * 10, 10, Math.cos(this.time) * 10);
-  }
 
   setActivePlanet(planet) {
     this.activePlanet = planet;
@@ -288,8 +404,13 @@ export default class WorldEngine {
     }
 
     this.updatePlanetGlow();
+    this.updateSky();
 
-    this.updateTimeOfDay();
+    const delta = this.clock.getDelta();
+
+    if (this.playerMixer) {
+      this.playerMixer.update(delta);
+    }
 
     this.bloom.render();
   };
