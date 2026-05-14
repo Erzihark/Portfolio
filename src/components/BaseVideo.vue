@@ -75,11 +75,4 @@ export default {
     top: 30%;
     transform-origin: center center;
 }
-
-.a-scene,
-.a-canvas,
-canvas {
-    position: relative;
-    z-index: 1;
-}
 </style>

@@ -23,7 +23,7 @@ export default defineConfig({
   },
 
   optimizeDeps: {
-    exclude: ['aframe', 'three']
+    disabled: false
   },
 
   build: {

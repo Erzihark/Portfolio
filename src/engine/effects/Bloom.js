@@ -1,53 +1,53 @@
+import * as THREE from 'three';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
-import * as THREE from 'three';
-import AFRAME from 'aframe';
+export default class Bloom {
+  constructor(renderer, scene, camera) {
+    this.renderer = renderer;
+    this.scene = scene;
+    this.camera = camera;
 
-AFRAME.registerSystem('bloom-system', {
-  init() {
-    this.sceneEl.addEventListener('renderstart', () => {
-      this.setupBloom();
+    this.setup();
+  }
+
+  setup() {
+    const renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, {
+      format: THREE.RGBAFormat,
+      type: THREE.HalfFloatType,
+      depthBuffer: true,
+      stencilBuffer: false
     });
-  },
 
-  setupBloom() {
-    const renderer = this.sceneEl.renderer;
+    this.composer = new EffectComposer(this.renderer, renderTarget);
 
-    const scene = this.sceneEl.object3D;
-
-    const camera =
-      this.sceneEl.camera || this.sceneEl.querySelector('[camera]')?.getObject3D('camera');
-
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-
-    this.composer = new EffectComposer(renderer);
-
-    const renderPass = new RenderPass(scene, camera);
+    const renderPass = new RenderPass(this.scene, this.camera);
 
     this.composer.addPass(renderPass);
 
-    const bloomPass = new UnrealBloomPass(
-      new THREE.Vector2(window.innerWidth * 0.25, window.innerHeight * 0.25),
-      2.0,
-      0.4,
+    this.bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      0.7,
+      0.3,
       0.2
     );
 
-    bloomPass.strength = 0.9;
-    //bloomPass.threshold = 0.9;
+    this.bloomPass.threshold = 0.15;
+    this.bloomPass.strength = 0.8;
+    this.bloomPass.radius = 0.4;
 
-    this.composer.addPass(bloomPass);
-
-    renderer.setAnimationLoop(() => {
-      this.composer.render();
-    });
+    this.composer.addPass(this.bloomPass);
   }
-});
+
+  render() {
+    this.renderer.setRenderTarget(null);
+    this.renderer.clearDepth();
+
+    this.composer.render();
+  }
+
+  resize(width, height) {
+    this.composer.setSize(width, height);
+  }
+}

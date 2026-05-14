@@ -1,22 +1,19 @@
 import emitter from '../services/emitter.service';
 import PlanetFactory from './PlanetFactory';
+import Bloom from './effects/Bloom';
 import * as THREE from 'three';
-import AFRAME from 'aframe';
 
+const BLOOM_LAYER = 1;
 export default class WorldEngine {
-  constructor(sceneEl, cameraEl, worldRootEl) {
-    this.sceneEl = sceneEl;
-    this.cameraEl = cameraEl;
-    this.threeCamera = null;
-
-    //this.THREE = window.AFRAME.THREE;
-
-    this.scene = sceneEl.object3D;
+  constructor(scene, camera, worldRoot, renderer) {
+    this.scene = scene;
+    this.camera = camera;
+    this.renderer = renderer;
+    this.worldRoot = worldRoot;
 
     this.clock = new THREE.Clock();
 
     this.planets = [];
-
     this.activePlanet = null;
 
     this.player = null;
@@ -26,15 +23,13 @@ export default class WorldEngine {
     this.input = null;
 
     this.time = 0;
-
     this.isRunning = false;
     this.isTransitioning = false;
 
-    this.worldRoot = worldRootEl.object3D;
-
     this.raycaster = new THREE.Raycaster();
-
     this.pointer = new THREE.Vector2();
+
+    this.bloom = new Bloom(this.renderer, this.scene, this.camera);
 
     this.tmpCameraForward = new THREE.Vector3();
     this.tmpCameraWorldPos = new THREE.Vector3();
@@ -50,18 +45,12 @@ export default class WorldEngine {
     this.createPlayer();
     this.createPlanets();
     this.bindPlanetSelection();
-
     this.setInitialPlanet();
-
     this.setupLighting();
 
     this.animate();
 
     emitter.emit('world-ready');
-
-    setTimeout(() => {
-      this.threeCamera = this.cameraEl.getObject3D('camera');
-    }, 0);
   }
 
   createPlayer() {
@@ -147,28 +136,17 @@ export default class WorldEngine {
   }
 
   updatePlanetGlow() {
-    const camera = this.cameraEl.components.camera?.camera;
+    const camera = this.camera;
 
-    if (!camera) return;
-
-    // Reused vectors
     const cameraForward = this.tmpCameraForward;
-
     const cameraWorldPos = this.tmpCameraWorldPos;
-
     const homeWorldPos = this.tmpHomeWorldPos;
-
     const planetWorldPos = this.tmpPlanetWorldPos;
-
     const toPlanet = this.tmpToPlanet;
 
-    // Camera direction
     camera.getWorldDirection(cameraForward);
-
-    // Camera position
     camera.getWorldPosition(cameraWorldPos);
 
-    // Home planet
     const homePlanet = this.planets[0];
 
     homePlanet.mesh.getWorldPosition(homeWorldPos);
@@ -214,14 +192,15 @@ export default class WorldEngine {
 
       if (isTargetable) {
         planet.mesh.material.color.set('#222222');
-
         planet.mesh.material.emissive.set('#00ffff');
-
         planet.mesh.material.emissiveIntensity = 1;
+
+        //planet.mesh.layers.enable(BLOOM_LAYER);
       } else {
         planet.mesh.material.emissiveIntensity = 0;
-
         planet.mesh.material.color.set(planet.ogColor);
+
+        //planet.mesh.layers.disable(BLOOM_LAYER);
       }
     });
   }
@@ -254,13 +233,11 @@ export default class WorldEngine {
   }
 
   onClick = (event) => {
-    if (!this.threeCamera) return;
-
     this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
 
     this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    this.raycaster.setFromCamera(this.pointer, this.threeCamera);
+    this.raycaster.setFromCamera(this.pointer, this.camera);
 
     const meshes = this.planets.map((planet) => planet.mesh);
 
@@ -287,8 +264,18 @@ export default class WorldEngine {
     emitter.emit('planet-changed', planet.id);
   }
 
+  destroy() {
+    cancelAnimationFrame(this.animationFrame);
+
+    this.renderer.dispose();
+
+    this.bloom?.composer?.dispose();
+
+    window.removeEventListener('click', this.onClick);
+  }
+
   animate = () => {
-    requestAnimationFrame(this.animate);
+    this.animationFrame = requestAnimationFrame(this.animate);
 
     this.input?.update();
 
@@ -303,5 +290,7 @@ export default class WorldEngine {
     this.updatePlanetGlow();
 
     this.updateTimeOfDay();
+
+    this.bloom.render();
   };
 }

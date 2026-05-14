@@ -1,30 +1,28 @@
 import * as THREE from 'three';
+
 export default class InputController {
-  constructor(sceneEl, world) {
-    this.sceneEl = sceneEl;
-    this.world = world;
-    //this.THREE = window.AFRAME.THREE;
+  constructor(renderer, worldRoot, worldEngine) {
+    this.renderer = renderer;
+    this.worldRoot = worldRoot;
+    this.world = worldEngine;
 
     this.isDragging = false;
 
-    this.previousPointer = { x: 0, y: 0 };
+    this.previousPointer = {
+      x: 0,
+      y: 0
+    };
 
     this.rotationVelocity = new THREE.Vector2();
 
     this.dragSensitivity = 0.00032;
-
     this.damping = 0.92;
 
     this.bindEvents();
   }
 
   bindEvents() {
-    const canvas = this.sceneEl.canvas;
-
-    if (!canvas) {
-      console.warn('A-Frame canvas not ready');
-      return;
-    }
+    const canvas = this.renderer.domElement;
 
     canvas.addEventListener('pointerdown', this.onPointerDown);
 
@@ -44,15 +42,16 @@ export default class InputController {
     if (!this.isDragging) return;
 
     const deltaX = e.clientX - this.previousPointer.x;
+
     const deltaY = e.clientY - this.previousPointer.y;
 
     this.previousPointer.x = e.clientX;
     this.previousPointer.y = e.clientY;
 
     this.rotationVelocity.x += deltaY * this.dragSensitivity;
+
     this.rotationVelocity.y += deltaX * this.dragSensitivity;
 
-    // RUNNING ANIMATION PLACEHOLDER
     if (this.world?.isRunning) {
       this.world.player.rotation.z = Math.sin(performance.now() * 0.02) * 0.15;
     }
@@ -63,23 +62,19 @@ export default class InputController {
   };
 
   update() {
-    if (!this.world?.object3D) return;
+    if (!this.worldRoot) return;
 
-    const root = this.world.object3D;
+    this.worldRoot.rotation.x += this.rotationVelocity.x;
 
-    root.rotation.x += this.rotationVelocity.x;
-
-    root.rotation.y += this.rotationVelocity.y;
+    this.worldRoot.rotation.y += this.rotationVelocity.y;
 
     this.rotationVelocity.multiplyScalar(this.damping);
   }
 
   destroy() {
-    const canvas = this.sceneEl.canvas;
+    const canvas = this.renderer.domElement;
 
-    if (canvas) {
-      canvas.removeEventListener('pointerdown', this.onPointerDown);
-    }
+    canvas.removeEventListener('pointerdown', this.onPointerDown);
 
     window.removeEventListener('pointermove', this.onPointerMove);
 

@@ -1,8 +1,7 @@
-import * as THREE from 'THREE';
+import * as THREE from 'three';
 export default class PlanetFactory {
   constructor(scene) {
     this.scene = scene;
-    //this.THREE = window.AFRAME.THREE;
   }
 
   createPlanet({ id, position, color, size }) {
