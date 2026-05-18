@@ -24,7 +24,8 @@ export default {
     data() {
         return {
             hasElapsed: false,
-            animationDuration: 3
+            animationDuration: 3,
+            isHoveringPlanet: false
         };
     },
 
@@ -58,7 +59,7 @@ export default {
 }
 
 .box {
-    position: relative; /* 1. Crucial for containing the absolute child */
+    position: relative;
     top: 98vh;
 }
 

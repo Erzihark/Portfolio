@@ -1,5 +1,9 @@
 <template>
-    <div ref="container" class="three-container"></div>
+    <div
+        ref="container"
+        class="three-container"
+        :class="{ 'cursor-pointer': isHoveringPlanet }"
+    ></div>
 </template>
 
 <script>
@@ -8,8 +12,15 @@ import * as THREE from 'three';
 import WorldEngine from '@/engine/WorldEngine';
 import NavigationSystem from '@/engine/NavigationSystem';
 import InputController from '@/engine/InputController';
+import emitter from '@/services/emitter.service';
 
 export default {
+    data() {
+        return {
+            isHoveringPlanet: false
+        };
+    },
+
     mounted() {
         this.onResize = this.onResize.bind(this);
 
@@ -88,7 +99,17 @@ export default {
                 input: this.input
             });
 
-            //this.bloom = new Bloom(this.renderer, this.scene, this.camera);
+            this.setupEventListeners();
+        },
+
+        setupEventListeners() {
+            emitter.on('planet-hover', (value) => {
+                if (value === this.isHoveringPlanet) {
+                    return;
+                }
+                //debugger;
+                this.isHoveringPlanet = value;
+            });
         },
 
         onResize() {

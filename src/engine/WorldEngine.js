@@ -56,19 +56,6 @@ export default class WorldEngine {
     this.setInitialPlanet();
     this.setupLighting();
 
-    // const test = new THREE.Mesh(
-    //   new THREE.SphereGeometry(1, 32, 32),
-    //   new THREE.MeshStandardMaterial({
-    //     color: 0x000000,
-    //     emissive: 0x00ffff,
-    //     emissiveIntensity: 50
-    //   })
-    // );
-
-    // test.position.set(10, 10, 10);
-
-    // this.scene.add(test);
-
     this.animate();
 
     emitter.emit('world-ready');
@@ -186,6 +173,26 @@ export default class WorldEngine {
     this.player.quaternion.multiply(this.playerCorrectionQuaternion);
   }
 
+  getIntersectedPlanet() {
+    this.raycaster.setFromCamera(this.pointer, this.camera);
+
+    const meshes = this.planets.map((planet) => planet.mesh);
+
+    const intersections = this.raycaster.intersectObjects(meshes, true);
+
+    if (!intersections.length) {
+      return null;
+    }
+
+    const planet = intersections[0].object.userData.planet;
+
+    if (!planet?.isTargetable) {
+      return null;
+    }
+
+    return planet;
+  }
+
   setupLighting() {
     this.directional = new THREE.DirectionalLight(0xffffff, 1.5);
 
@@ -280,6 +287,10 @@ export default class WorldEngine {
     this.planets.forEach((planet) => {
       const isTargetable = planet === bestPlanet;
 
+      if (isTargetable) {
+        planet.mesh.rotation.y += 0.05;
+      }
+
       planet.isTargetable = isTargetable;
 
       planet.mesh.scale.setScalar(isTargetable ? 1.15 : 1);
@@ -350,28 +361,41 @@ export default class WorldEngine {
     }
   }
 
+  updateHoverStatus() {
+    const planet = this.getIntersectedPlanet();
+
+    const isHovering = !!planet;
+
+    if (this.isHoveringPlanet !== isHovering) {
+      this.isHoveringPlanet = isHovering;
+
+      emitter.emit('planet-hover', isHovering);
+    }
+  }
+
   bindPlanetSelection() {
     window.addEventListener('click', this.onClick);
+    window.addEventListener('mousemove', this.onMouseMove);
   }
 
   onClick = (event) => {
     this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-
     this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    this.raycaster.setFromCamera(this.pointer, this.camera);
+    const planet = this.getIntersectedPlanet();
 
-    const meshes = this.planets.map((planet) => planet.mesh);
+    emitter.emit('planet-hover', !!planet);
 
-    const intersections = this.raycaster.intersectObjects(meshes, true);
-
-    if (!intersections.length) return;
-
-    const planet = intersections[0].object.userData.planet;
-
-    if (!planet?.isTargetable) return;
+    if (!planet) return;
 
     this.travelToPlanet(planet);
+  };
+
+  onMouseMove = (event) => {
+    this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    this.updateHoverStatus();
   };
 
   setActivePlanet(planet) {
@@ -403,6 +427,7 @@ export default class WorldEngine {
       this.updatePlanetTransition();
     }
 
+    this.updateHoverStatus();
     this.updatePlanetGlow();
     this.updateSky();
 

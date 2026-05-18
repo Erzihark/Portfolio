@@ -21,7 +21,7 @@ export default class PlanetFactory {
     const mesh = await this.loader.load(modelPath);
 
     mesh.position.copy(position);
-    normalizeModel(mesh, size);
+    //normalizeModel(mesh, size);
 
     mesh.traverse((child) => {
       if (!child.isMesh) return;
@@ -36,21 +36,16 @@ export default class PlanetFactory {
         if (material.isMeshStandardMaterial || material.isMeshPhysicalMaterial) {
           material.toneMapped = true;
 
-          // preserve original texture/color
           material.color.multiplyScalar(1);
 
-          // preserve original emissive if it exists
           const originalEmissive = material.emissive
             ? material.emissive.clone()
             : new THREE.Color(0x000000);
 
-          // mix original emissive with planet glow color
           material.emissive = originalEmissive.lerp(new THREE.Color(emissive), 0.35);
 
-          // THIS is the important part
           material.emissiveIntensity = emissiveIntensity;
 
-          // improve HDR response
           material.envMapIntensity = 1.5;
 
           material.needsUpdate = true;
@@ -82,7 +77,7 @@ export default class PlanetFactory {
       id: 'home',
       modelPath: '/models/center.glb',
       position: new THREE.Vector3(0, 0, 0),
-      size: 4,
+      size: 6,
       emissive: 0x4444ff
     });
   }
