@@ -1,9 +1,6 @@
 <template>
     <div class="overlay">
-        <button @click="go('projects')">Projects</button>
-        <button @click="go('skills')">Skills</button>
-        <button @click="go('experience')">Experience</button>
-        <button @click="go('home')">Home</button>
+        <app-header @setModal="setModal" />
 
         <div class="box">
             <base-animation
@@ -13,36 +10,54 @@
                 :hasElapsed="hasElapsed"
             ></base-animation>
         </div>
+
+        <base-modal :modal="isModalOpen" buttonText="X" @buttonClick="setModal(false)">
+            {{ modalContent }}
+        </base-modal>
     </div>
 </template>
 
 <script>
-import emitter from '@/services/emitter.service';
 import BaseAnimation from './BaseAnimation.vue';
+import AppHeader from './AppHeader.vue';
+import BaseModal from './BaseModal.vue';
+import emitter from '@/services/emitter.service';
 
 export default {
     data() {
         return {
             hasElapsed: false,
             animationDuration: 3,
-            isHoveringPlanet: false
+            isHoveringPlanet: false,
+            modalContent: 'test text',
+            isModalOpen: false
         };
     },
 
+    methods: {
+        setModal(value) {
+            this.isModalOpen = value;
+
+            if (!value) {
+                emitter.emit('close-planet-view');
+            }
+        }
+    },
+
     mounted() {
+        emitter.on('planet-focus-complete', () => {
+            this.setModal(true);
+        });
+
         setTimeout(() => {
             this.hasElapsed = true;
         }, this.animationDuration * 1000);
     },
 
-    methods: {
-        go(id) {
-            emitter.emit('navigate-to', id);
-        }
-    },
-
     components: {
-        BaseAnimation
+        BaseAnimation,
+        AppHeader,
+        BaseModal
     }
 };
 </script>

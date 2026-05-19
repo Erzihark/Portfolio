@@ -110,6 +110,7 @@ export default {
                 //debugger;
                 this.isHoveringPlanet = value;
             });
+            emitter.on('');
         },
 
         onResize() {

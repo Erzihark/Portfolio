@@ -31,6 +31,26 @@ export default class WorldEngine {
     this.isRunning = false;
     this.isTransitioning = false;
 
+    this.cameraTransition = {
+      active: false,
+      returning: false,
+      progress: 0,
+      duration: 1.5,
+
+      startPosition: new THREE.Vector3(),
+      startQuaternion: new THREE.Quaternion(),
+
+      targetPosition: new THREE.Vector3(),
+      targetQuaternion: new THREE.Quaternion(),
+
+      savedPosition: new THREE.Vector3(),
+      savedQuaternion: new THREE.Quaternion(),
+
+      focusedPlanet: null
+    };
+
+    this.tmpLookMatrix = new THREE.Matrix4();
+
     this.raycaster = new THREE.Raycaster();
     this.pointer = new THREE.Vector2();
 
@@ -55,10 +75,17 @@ export default class WorldEngine {
     this.bindPlanetSelection();
     this.setInitialPlanet();
     this.setupLighting();
+    this.addEventListeners();
 
     this.animate();
 
     emitter.emit('world-ready');
+  }
+
+  addEventListeners() {
+    emitter.on('close-planet-view', () => {
+      this.returnCamera();
+    });
   }
 
   createBackground() {
@@ -124,11 +151,8 @@ export default class WorldEngine {
 
     this.planets = await Promise.all([
       factory.createCenterPlanet(),
-
       factory.createProjectsPlanet(),
-
       factory.createSkillsPlanet(),
-
       factory.createExperiencePlanet()
     ]);
   }
@@ -373,6 +397,35 @@ export default class WorldEngine {
     }
   }
 
+  updateCameraTransition(delta) {
+    const transition = this.cameraTransition;
+
+    if (!transition.active) return;
+
+    transition.progress += delta / transition.duration;
+
+    const t = Math.min(transition.progress, 1);
+
+    // Smooth easing
+    const eased = 1 - Math.pow(1 - t, 3);
+
+    this.camera.position.lerpVectors(transition.startPosition, transition.targetPosition, eased);
+
+    this.camera.quaternion
+      .copy(transition.startQuaternion)
+      .slerp(transition.targetQuaternion, eased);
+
+    if (t >= 1) {
+      if (transition.returning) {
+        transition.active = false;
+        transition.returning = false;
+        transition.focusedPlanet = null;
+      } else {
+        emitter.emit('planet-focus-complete');
+      }
+    }
+  }
+
   bindPlanetSelection() {
     window.addEventListener('click', this.onClick);
     window.addEventListener('mousemove', this.onMouseMove);
@@ -389,6 +442,7 @@ export default class WorldEngine {
     if (!planet) return;
 
     this.travelToPlanet(planet);
+    this.focusPlanet(planet);
   };
 
   onMouseMove = (event) => {
@@ -398,10 +452,71 @@ export default class WorldEngine {
     this.updateHoverStatus();
   };
 
+  focusPlanet(planet) {
+    if (this.cameraTransition.active) return;
+
+    const transition = this.cameraTransition;
+
+    transition.active = true;
+    transition.returning = false;
+    transition.progress = 0;
+    transition.focusedPlanet = planet;
+
+    // Save ORIGINAL camera state
+    transition.savedPosition.copy(this.camera.position);
+    transition.savedQuaternion.copy(this.camera.quaternion);
+
+    transition.startPosition.copy(this.camera.position);
+    transition.startQuaternion.copy(this.camera.quaternion);
+
+    // Planet world position
+    const planetPos = new THREE.Vector3();
+    planet.mesh.getWorldPosition(planetPos);
+
+    // Direction from planet -> camera
+    const toCamera = this.camera.position.clone().sub(planetPos).normalize();
+
+    /**
+     * Build cinematic framing:
+     * - move closer
+     * - offset to right so planet appears left on screen
+     */
+
+    const sideOffset = new THREE.Vector3()
+      .crossVectors(new THREE.Vector3(0, 1, 0), toCamera)
+      .normalize()
+      .multiplyScalar(2.5);
+
+    const targetPos = planetPos.clone().add(toCamera.multiplyScalar(4)).add(sideOffset);
+
+    transition.targetPosition.copy(targetPos);
+
+    // Quaternion looking at planet
+    this.tmpLookMatrix.lookAt(targetPos, planetPos, new THREE.Vector3(0, 1, 0));
+
+    transition.targetQuaternion.setFromRotationMatrix(this.tmpLookMatrix);
+  }
+
   setActivePlanet(planet) {
     this.activePlanet = planet;
 
     emitter.emit('planet-changed', planet.id);
+  }
+
+  returnCamera() {
+    const transition = this.cameraTransition;
+
+    if (!transition.active) return;
+
+    transition.returning = true;
+    transition.progress = 0;
+
+    transition.startPosition.copy(this.camera.position);
+    transition.startQuaternion.copy(this.camera.quaternion);
+
+    transition.targetPosition.copy(transition.savedPosition);
+
+    transition.targetQuaternion.copy(transition.savedQuaternion);
   }
 
   destroy() {
@@ -419,7 +534,9 @@ export default class WorldEngine {
 
     this.input?.update();
 
-    this.navigation?.update();
+    if (!this.cameraTransition.active) {
+      this.navigation?.update();
+    }
 
     if (!this.isTransitioning) {
       this.updatePlayer();
@@ -432,6 +549,8 @@ export default class WorldEngine {
     this.updateSky();
 
     const delta = this.clock.getDelta();
+
+    this.updateCameraTransition(delta);
 
     if (this.playerMixer) {
       this.playerMixer.update(delta);

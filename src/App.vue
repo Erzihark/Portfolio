@@ -183,4 +183,10 @@ body {
 .cursor-pointer {
     cursor: pointer;
 }
+
+.michroma-regular {
+    font-family: 'Michroma', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
 </style>
