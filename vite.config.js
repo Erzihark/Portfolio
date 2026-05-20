@@ -22,10 +22,6 @@ export default defineConfig({
     }
   },
 
-  optimizeDeps: {
-    disabled: false
-  },
-
   build: {
     chunkSizeWarningLimit: 1000,
 

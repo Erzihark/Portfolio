@@ -16,7 +16,7 @@
         </div>
 
         <base-modal
-            :modalTitle="'TEST TITLE'"
+            :modalTitle="transitionPlanetId.charAt(0).toUpperCase() + transitionPlanetId.slice(1)"
             :open="isModalOpen"
             buttonText="X"
             @buttonClick="setModal(false)"
@@ -35,6 +35,7 @@ import SkillsView from '../views/Skills.vue';
 import ExperienceView from '../views/Experience.vue';
 import ProjectsView from '../views/Projects.vue';
 import ContactView from '../views/Contact.vue';
+import HomeView from '../views/Home.vue';
 
 export default {
     props: ['isMobile'],
@@ -57,17 +58,17 @@ export default {
             switch (this.transitionPlanetId) {
                 case 'experience':
                     return ExperienceView;
-
                 case 'skills':
                     return SkillsView;
-
                 case 'projects':
                     return ProjectsView;
                 case 'contact':
                     return ContactView;
+                case 'home':
+                    return HomeView;
 
                 default:
-                    return 'HomeContent';
+                    return HomeView;
             }
         }
     },

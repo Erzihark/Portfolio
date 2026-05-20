@@ -68,7 +68,8 @@ export default {
                 { text: 'Home', go_to: 'home' },
                 { text: 'Projects', go_to: 'projects' },
                 { text: 'Skills', go_to: 'skills' },
-                { text: 'Experience', go_to: 'experience' }
+                { text: 'Experience', go_to: 'experience' },
+                { text: 'Contact', go_to: 'contact' }
             ]
         };
     },

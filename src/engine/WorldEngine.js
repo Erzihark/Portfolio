@@ -27,7 +27,6 @@ export default class WorldEngine {
     this.input = null;
 
     this.time = 0;
-    this.isRunning = false;
     this.isTransitioning = false;
 
     this.cameraTransition = {
@@ -78,6 +77,8 @@ export default class WorldEngine {
     this.addEventListeners();
 
     this.animate();
+
+    this.worldRoot.rotation.x += 0.3;
 
     emitter.emit('world-ready');
   }
@@ -202,8 +203,6 @@ export default class WorldEngine {
     this.player.quaternion.multiply(this.playerCorrectionQuaternion);
   }
 
-  getPlanetById(id) {}
-
   getIntersectedPlanet() {
     this.raycaster.setFromCamera(this.pointer, this.camera);
 
@@ -241,13 +240,6 @@ export default class WorldEngine {
 
     // Player always stays on top
     this.placePlayerOnPlanet(this.activePlanet);
-
-    // Fake running animation
-    if (this.isRunning) {
-      this.player.rotation.z = Math.sin(performance.now() * 0.02) * 0.08;
-    } else {
-      this.player.rotation.z = 0;
-    }
   }
 
   updateSky() {
