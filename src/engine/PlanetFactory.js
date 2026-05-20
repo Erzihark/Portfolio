@@ -82,6 +82,16 @@ export default class PlanetFactory {
     });
   }
 
+  async createContactPlanet() {
+    return this.createPlanet({
+      id: 'contact',
+      modelPath: '/models/contact.glb',
+      position: new THREE.Vector3(0, 0, 10),
+      size: 1.5,
+      emissive: 0x4444ff
+    });
+  }
+
   async createProjectsPlanet() {
     return this.createPlanet({
       id: 'projects',

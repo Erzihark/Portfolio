@@ -24,7 +24,6 @@ export default class WorldEngine {
     this.tmpForward = new THREE.Vector3();
     this.playerCorrectionQuaternion = new THREE.Quaternion();
 
-    this.navigation = null;
     this.input = null;
 
     this.time = 0;
@@ -63,10 +62,11 @@ export default class WorldEngine {
     this.tmpToPlanet = new THREE.Vector3();
 
     this.modelLoader = new ModelLoader();
+
+    this.isMobile = window.innerWidth < 768;
   }
 
-  async init({ navigation, input }) {
-    this.navigation = navigation;
+  async init({ input }) {
     this.input = input;
 
     this.createBackground();
@@ -84,7 +84,11 @@ export default class WorldEngine {
 
   addEventListeners() {
     emitter.on('close-planet-view', () => {
+      this.restorePlanetVisibility();
       this.returnCamera();
+    });
+    emitter.on('navigate-to', ({ event, id }) => {
+      this.onClick(event, id);
     });
   }
 
@@ -153,7 +157,8 @@ export default class WorldEngine {
       factory.createCenterPlanet(),
       factory.createProjectsPlanet(),
       factory.createSkillsPlanet(),
-      factory.createExperiencePlanet()
+      factory.createExperiencePlanet(),
+      factory.createContactPlanet()
     ]);
   }
 
@@ -196,6 +201,8 @@ export default class WorldEngine {
     // Apply model correction
     this.player.quaternion.multiply(this.playerCorrectionQuaternion);
   }
+
+  getPlanetById(id) {}
 
   getIntersectedPlanet() {
     this.raycaster.setFromCamera(this.pointer, this.camera);
@@ -431,11 +438,16 @@ export default class WorldEngine {
     window.addEventListener('mousemove', this.onMouseMove);
   }
 
-  onClick = (event) => {
+  onClick = (event, id = null) => {
+    if (this.isTransitioning || this.cameraTransition.active) {
+      return;
+    }
+
     this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    const planet = this.getIntersectedPlanet();
+    const planet =
+      id === null ? this.getIntersectedPlanet() : this.planets.find((planet) => planet.id === id);
 
     emitter.emit('planet-hover', !!planet);
 
@@ -455,6 +467,8 @@ export default class WorldEngine {
   focusPlanet(planet) {
     if (this.cameraTransition.active) return;
 
+    this.fadeOtherPlanets(planet);
+
     const transition = this.cameraTransition;
 
     transition.active = true;
@@ -462,39 +476,108 @@ export default class WorldEngine {
     transition.progress = 0;
     transition.focusedPlanet = planet;
 
-    // Save ORIGINAL camera state
+    emitter.emit('planet-transition-start', planet.id);
+
     transition.savedPosition.copy(this.camera.position);
     transition.savedQuaternion.copy(this.camera.quaternion);
 
     transition.startPosition.copy(this.camera.position);
     transition.startQuaternion.copy(this.camera.quaternion);
 
-    // Planet world position
+    // -----------------------------
+    // PLANET POSITION
+    // -----------------------------
+
     const planetPos = new THREE.Vector3();
     planet.mesh.getWorldPosition(planetPos);
 
-    // Direction from planet -> camera
-    const toCamera = this.camera.position.clone().sub(planetPos).normalize();
+    // -----------------------------
+    // CAMERA BASIS
+    // -----------------------------
 
-    /**
-     * Build cinematic framing:
-     * - move closer
-     * - offset to right so planet appears left on screen
-     */
+    const forward = new THREE.Vector3();
+    this.camera.getWorldDirection(forward);
 
-    const sideOffset = new THREE.Vector3()
-      .crossVectors(new THREE.Vector3(0, 1, 0), toCamera)
-      .normalize()
-      .multiplyScalar(2.5);
+    const up = new THREE.Vector3(0, 1, 0);
 
-    const targetPos = planetPos.clone().add(toCamera.multiplyScalar(4)).add(sideOffset);
+    const right = new THREE.Vector3().crossVectors(forward, up).normalize();
+
+    // -----------------------------
+    // CONSISTENT FRAMING
+    // -----------------------------
+
+    const isMobile = window.innerWidth < 768;
+
+    // how far camera sits from planet
+    const distance = isMobile ? 8 : 9;
+
+    // screen composition offsets
+    const horizontalOffset = isMobile ? 0 : -3.5;
+    const verticalOffset = isMobile ? 0.5 : 1.2;
+
+    // camera position
+    const targetPos = planetPos
+      .clone()
+      .add(forward.clone().multiplyScalar(-distance))
+      .add(right.clone().multiplyScalar(horizontalOffset))
+      .add(up.clone().multiplyScalar(verticalOffset));
 
     transition.targetPosition.copy(targetPos);
 
-    // Quaternion looking at planet
-    this.tmpLookMatrix.lookAt(targetPos, planetPos, new THREE.Vector3(0, 1, 0));
+    // -----------------------------
+    // LOOK AT PLANET
+    // -----------------------------
+
+    this.tmpLookMatrix.lookAt(targetPos, planetPos, up);
 
     transition.targetQuaternion.setFromRotationMatrix(this.tmpLookMatrix);
+  }
+
+  fadeOtherPlanets(focusedPlanet) {
+    this.planets.forEach((planet) => {
+      const isFocused = planet === focusedPlanet;
+
+      planet.mesh.traverse((child) => {
+        if (!child.isMesh) return;
+
+        const materials = Array.isArray(child.material) ? child.material : [child.material];
+
+        materials.forEach((material) => {
+          if (!material) return;
+
+          material.transparent = true;
+
+          if (isFocused) {
+            material.opacity = 1.0;
+            material.depthWrite = true;
+          } else {
+            material.opacity = 0.08;
+            material.depthWrite = false;
+          }
+
+          material.needsUpdate = true;
+        });
+      });
+    });
+  }
+
+  restorePlanetVisibility() {
+    this.planets.forEach((planet) => {
+      planet.mesh.traverse((child) => {
+        if (!child.isMesh) return;
+
+        const materials = Array.isArray(child.material) ? child.material : [child.material];
+
+        materials.forEach((material) => {
+          if (!material) return;
+
+          material.opacity = 1.0;
+          material.transparent = false;
+          material.depthWrite = true;
+          material.needsUpdate = true;
+        });
+      });
+    });
   }
 
   setActivePlanet(planet) {
@@ -533,10 +616,6 @@ export default class WorldEngine {
     this.animationFrame = requestAnimationFrame(this.animate);
 
     this.input?.update();
-
-    if (!this.cameraTransition.active) {
-      this.navigation?.update();
-    }
 
     if (!this.isTransitioning) {
       this.updatePlayer();

@@ -1,6 +1,10 @@
 <template>
     <div class="overlay">
-        <app-header @setModal="setModal" />
+        <app-header
+            :isPlanetTransitioning="isPlanetTransitioning"
+            :isMobile="isMobile"
+            @setModal="setModal"
+        />
 
         <div class="box">
             <base-animation
@@ -11,8 +15,13 @@
             ></base-animation>
         </div>
 
-        <base-modal :modal="isModalOpen" buttonText="X" @buttonClick="setModal(false)">
-            {{ modalContent }}
+        <base-modal
+            :modalTitle="'TEST TITLE'"
+            :open="isModalOpen"
+            buttonText="X"
+            @buttonClick="setModal(false)"
+        >
+            <component :is="currentComponent" />
         </base-modal>
     </div>
 </template>
@@ -22,16 +31,45 @@ import BaseAnimation from './BaseAnimation.vue';
 import AppHeader from './AppHeader.vue';
 import BaseModal from './BaseModal.vue';
 import emitter from '@/services/emitter.service';
+import SkillsView from '../views/Skills.vue';
+import ExperienceView from '../views/Experience.vue';
+import ProjectsView from '../views/Projects.vue';
+import ContactView from '../views/Contact.vue';
 
 export default {
+    props: ['isMobile'],
+
     data() {
         return {
             hasElapsed: false,
             animationDuration: 3,
+            selectedView: null,
             isHoveringPlanet: false,
             modalContent: 'test text',
-            isModalOpen: false
+            isModalOpen: false,
+            isPlanetTransitioning: false,
+            transitionPlanetId: null
         };
+    },
+
+    computed: {
+        currentComponent() {
+            switch (this.transitionPlanetId) {
+                case 'experience':
+                    return ExperienceView;
+
+                case 'skills':
+                    return SkillsView;
+
+                case 'projects':
+                    return ProjectsView;
+                case 'contact':
+                    return ContactView;
+
+                default:
+                    return 'HomeContent';
+            }
+        }
     },
 
     methods: {
@@ -47,6 +85,12 @@ export default {
     mounted() {
         emitter.on('planet-focus-complete', () => {
             this.setModal(true);
+            this.isPlanetTransitioning = false;
+        });
+
+        emitter.on('planet-transition-start', (id) => {
+            this.isPlanetTransitioning = true;
+            this.transitionPlanetId = id;
         });
 
         setTimeout(() => {

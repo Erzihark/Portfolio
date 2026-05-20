@@ -1,79 +1,115 @@
 <template>
     <header class="header">
         <div class="header__logo">
-            <img class="header__logo__image" width="50" height="50" src="../assets/logo.webp" />
-            <div class="header__logo__text">Manuel Sanchez</div>
+            <img
+                class="header__logo__image"
+                :width="isMobile ? 30 : 50"
+                :height="isMobile ? 30 : 50"
+                src="../assets/logo.webp"
+            />
+
+            <div
+                class="header__logo__text michroma-regular"
+                :class="{ 'header__logo__text--mobile': isMobile }"
+            >
+                Manuel Carretero
+            </div>
         </div>
-        <div class="header__navigation-buttons">
+
+        <!-- Desktop Navigation -->
+        <div v-if="!isMobile" class="header__navigation-buttons">
             <button
                 v-for="planet of planetButtons"
-                @click="go(planet.go_to)"
                 :key="planet.text"
-                class="header__navigation-buttons__button cursor-pointer michroma-regular"
+                :disabled="isPlanetTransitioning"
+                class="header__navigation-buttons__button cursor-pointer bruno-ace-sc-regular"
+                @click="go($event, planet.go_to)"
             >
                 {{ planet.text }}
             </button>
         </div>
-        <div></div>
+
+        <!-- Mobile Hamburger -->
+        <div v-else class="header__mobile">
+            <button class="header__mobile__hamburger cursor-pointer" @click="menuOpen = !menuOpen">
+                ☰
+            </button>
+
+            <transition name="mobile-menu">
+                <div v-if="menuOpen" class="header__mobile__menu">
+                    <button
+                        v-for="planet of planetButtons"
+                        :key="planet.text"
+                        :disabled="isPlanetTransitioning"
+                        class="header__mobile__menu__button bruno-ace-sc-regular"
+                        @click="go($event, planet.go_to)"
+                    >
+                        {{ planet.text }}
+                    </button>
+                </div>
+            </transition>
+        </div>
+
+        <div v-if="!isMobile" class="header__placeholder"></div>
     </header>
 </template>
+
 <script>
 import emitter from '@/services/emitter.service';
 
 export default {
-    props: ['setModal'],
+    props: ['isPlanetTransitioning', 'setModal', 'isMobile'],
+
     data() {
         return {
+            menuOpen: false,
+
             planetButtons: [
-                {
-                    text: 'Home',
-                    go_to: 'home'
-                },
-                {
-                    text: 'Projects',
-                    go_to: 'projects'
-                },
-                {
-                    text: 'Skills',
-                    go_to: 'skills'
-                },
-                {
-                    text: 'Experience',
-                    go_to: 'experience'
-                }
+                { text: 'Home', go_to: 'home' },
+                { text: 'Projects', go_to: 'projects' },
+                { text: 'Skills', go_to: 'skills' },
+                { text: 'Experience', go_to: 'experience' }
             ]
         };
     },
 
     methods: {
-        go(id) {
-            console.log('clicked: ', id);
-            emitter.emit('navigate-to', id);
-            
+        go(event, id) {
+            this.menuOpen = false;
+
+            emitter.emit('navigate-to', { event, id });
         }
     }
 };
 </script>
+
 <style lang="scss" scoped>
 .header {
     position: fixed;
-    width: 100%;
+    width: calc(100% - 16px);
     height: 50px;
     z-index: 10;
+
     display: flex;
     flex-direction: row;
+    align-items: center;
+
     margin: 8px;
+
     &__logo {
         display: flex;
-        padding: 10px;
+        padding: 4px;
         justify-content: center;
-        //align-items: center;
-
-        &__image {
-        }
+        z-index: 12;
 
         &__text {
-            color: #2ea04391;
+            color: #90cf38;
+            line-height: 1.1;
+            align-self: center;
+
+            &--mobile {
+                font-size: 12px;
+            }
         }
     }
 
@@ -81,23 +117,121 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
+
         gap: 8px;
+
         width: 100%;
         height: 100%;
 
         &__button {
             background-image: linear-gradient(#2ea04391, #2ea04344);
+
             border: 2px solid rgba(46, 160, 67, 0.4);
             border-radius: 4px;
+
             color: #f0f6fc;
+
             padding: 8px;
             text-align: center;
+
             background-color: unset;
+
+            transition:
+                background-color 0.2s,
+                transform 0.2s;
 
             &:hover {
                 background-color: #2ea04391;
+                transform: translateY(-1px);
+            }
+
+            &:disabled {
+                background-image: unset;
+                background-color: #17221991;
             }
         }
     }
+
+    &__mobile {
+        margin-left: auto;
+        position: relative;
+
+        &__hamburger {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 6px;
+            border: 2px solid rgba(46, 160, 67, 0.4);
+            background-color: unset;
+
+            background-image: linear-gradient(#2ea04391, #2ea04344);
+
+            color: #f0f6fc;
+            font-size: 22px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        &__menu {
+            position: absolute;
+
+            top: 52px;
+            right: 0;
+
+            width: 180px;
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 8px;
+
+            padding: 12px;
+
+            border-radius: 10px;
+
+            background: rgba(10, 15, 20, 0.95);
+            border: 1px solid rgba(46, 160, 67, 0.4);
+
+            backdrop-filter: blur(10px);
+
+            &__button {
+                background-image: linear-gradient(#2ea04391, #2ea04344);
+
+                border: 2px solid rgba(46, 160, 67, 0.4);
+                border-radius: 4px;
+
+                color: #f0f6fc;
+
+                padding: 10px;
+
+                background-color: unset;
+
+                &:disabled {
+                    background-image: unset;
+                    background-color: #17221991;
+                }
+            }
+        }
+    }
+
+    &__placeholder {
+        width: 22%;
+    }
+}
+
+/* Transition */
+.mobile-menu-enter-active,
+.mobile-menu-leave-active {
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+.mobile-menu-enter-from,
+.mobile-menu-leave-to {
+    opacity: 0;
+    transform: translateY(-10px);
 }
 </style>

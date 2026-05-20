@@ -10,7 +10,6 @@
 import * as THREE from 'three';
 
 import WorldEngine from '@/engine/WorldEngine';
-import NavigationSystem from '@/engine/NavigationSystem';
 import InputController from '@/engine/InputController';
 import emitter from '@/services/emitter.service';
 
@@ -90,12 +89,9 @@ export default {
                 this.renderer
             );
 
-            this.nav = new NavigationSystem(this.world);
-
             this.input = new InputController(this.renderer, this.worldRoot, this.world);
 
             this.world.init({
-                navigation: this.nav,
                 input: this.input
             });
 
@@ -107,7 +103,7 @@ export default {
                 if (value === this.isHoveringPlanet) {
                     return;
                 }
-                //debugger;
+
                 this.isHoveringPlanet = value;
             });
             emitter.on('');

@@ -10,7 +10,7 @@
 
         <template v-if="ready">
             <portfolio-scene />
-            <portfolio-overlay />
+            <portfolio-overlay :isMobile="isMobile" />
         </template>
     </div>
 </template>
@@ -186,6 +186,12 @@ body {
 
 .michroma-regular {
     font-family: 'Michroma', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.bruno-ace-sc-regular {
+    font-family: 'Bruno Ace SC', sans-serif;
     font-weight: 400;
     font-style: normal;
 }

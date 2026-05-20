@@ -3,18 +3,19 @@
         <div
             :class="{
                 'wrapper__modal animate__animated': true,
-                animate__fadeIn: modal,
-                animate__fadeOut: !modal,
-                'display-none': !modal
+                animate__fadeIn: open,
+                animate__fadeOut: !open,
+                'display-none': !open
             }"
         >
             <div v-if="animate" class="modal animate__animated animate__slideInUp">
-                <div class="modal__content">
+                <div class="modal__header">
+                    <div class="bruno-ace-sc-regular">{{ modalTitle }}</div>
+                    <button class="wrapper__button" @click="handleButtonClick">X</button>
+                </div>
+                <div class="modal__content michroma-regular">
                     <slot></slot>
                     <!-- Use slot to pass content from parent -->
-                    <button class="wrapper__button" @click="handleButtonClick">
-                        {{ buttonText }}
-                    </button>
                 </div>
             </div>
         </div>
@@ -28,7 +29,8 @@ export default {
     emits: ['buttonClick'],
 
     props: {
-        modal: Boolean,
+        modalTitle: String,
+        open: Boolean,
         buttonText: String
     },
 
@@ -57,7 +59,7 @@ export default {
     width: 100%;
     height: 100%;
     z-index: 999;
-    background-color: rgba(255, 255, 255, 0.07);
+    background-color: rgba(0, 0, 0, 0.5);
     position: absolute;
     top: 0;
     left: 0;
@@ -77,6 +79,11 @@ export default {
         box-sizing: border-box;
         text-align: center;
 
+        &__header {
+            display: flex;
+            justify-content: space-between;
+        }
+
         &__content {
             padding: 20px;
             overflow: hidden;
@@ -89,7 +96,7 @@ export default {
 
         .wrapper__button {
             font-family: 'League Gothic', sans-serif;
-            font-size: 32px;
+            font-size: 16px;
             padding: 5px 10px;
             border-radius: 10px;
             color: #fefdc5;
