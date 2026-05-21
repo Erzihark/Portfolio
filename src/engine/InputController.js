@@ -63,10 +63,6 @@ export default class InputController {
 
     this.rotationVelocity.x += deltaY * this.dragSensitivity * mobileMultiplier;
     this.rotationVelocity.y += deltaX * this.dragSensitivity * mobileMultiplier;
-
-    if (this.world?.isRunning) {
-      this.world.player.rotation.z = Math.sin(performance.now() * 0.02) * 0.15;
-    }
   };
 
   onPointerUp = (e) => {

@@ -10,6 +10,8 @@
         "format": "prettier --write src/"
     },
     "dependencies": {
+        "@emailjs/browser": "^4.4.1",
+        "@fortawesome/fontawesome-free": "^7.2.0",
         "@vitejs/plugin-basic-ssl": "^2.3.0",
         "image-preloader": "^1.1.1",
         "mitt": "^3.0.1",

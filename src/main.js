@@ -2,7 +2,7 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import CONFIG from './config';
 import mitt from 'mitt';
-import FPSCounter from './services/fps-display.service';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 //new FPSCounter();
 

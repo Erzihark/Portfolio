@@ -16,7 +16,12 @@
         </div>
 
         <base-modal
-            :modalTitle="transitionPlanetId.charAt(0).toUpperCase() + transitionPlanetId.slice(1)"
+            :modalTitle="
+                transitionPlanetId
+                    ? transitionPlanetId.charAt(0).toUpperCase() + transitionPlanetId.slice(1)
+                    : ''
+            "
+            :isMobile="isMobile"
             :open="isModalOpen"
             buttonText="X"
             @buttonClick="setModal(false)"

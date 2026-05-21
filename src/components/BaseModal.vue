@@ -8,7 +8,11 @@
                 'display-none': !open
             }"
         >
-            <div v-if="animate" class="modal animate__animated animate__slideInUp">
+            <div
+                v-if="animate"
+                class="modal animate__animated animate__slideInUp"
+                :class="{ 'modal--mobile': isMobile }"
+            >
                 <div class="modal__header">
                     <div class="bruno-ace-sc-regular">{{ modalTitle }}</div>
                     <button class="wrapper__button" @click="handleButtonClick">X</button>
@@ -29,6 +33,7 @@ export default {
     emits: ['buttonClick'],
 
     props: {
+        isMobile: Boolean,
         modalTitle: String,
         open: Boolean,
         buttonText: String
@@ -75,7 +80,7 @@ export default {
         padding: 8px;
         text-align: center;
         width: 80%;
-        max-width: 400px;
+        max-width: 550px;
         box-sizing: border-box;
         text-align: center;
 
@@ -85,8 +90,12 @@ export default {
         }
 
         &__content {
-            padding: 20px;
-            overflow: hidden;
+            padding: 10px;
+            margin-top: 8px;
+            max-height: 85vh;
+            overflow: auto;
+            scrollbar-color: #90cf38 #2ea04391;
+            scrollbar-width: thin;
         }
 
         p {
@@ -101,9 +110,17 @@ export default {
             border-radius: 10px;
             color: #fefdc5;
             position: relative;
-            box-shadow: -2px 2px 0px 2px rgba(0, 0, 0, 0.75);
-            -webkit-box-shadow: -2px 2px 0px 2px rgba(0, 0, 0, 0.75);
-            -moz-box-shadow: -2px 2px 0px 2px rgba(0, 0, 0, 0.75);
+            box-shadow: -1px 1px 0px 1px rgba(0, 0, 0, 0.75);
+            -webkit-box-shadow: -1px 1px 0px 1px rgba(0, 0, 0, 0.75);
+            -moz-box-shadow: -1px 1px 0px 1px rgba(0, 0, 0, 0.75);
+
+            &:hover {
+                color: #90cf38;
+            }
+        }
+
+        &--mobile {
+            max-width: 400px;
         }
     }
 }
