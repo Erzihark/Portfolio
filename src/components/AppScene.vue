@@ -1,8 +1,8 @@
 <template>
     <div
         ref="container"
-        class="three-container"
-        :class="{ 'cursor-pointer': isHoveringPlanet }"
+        class="three__container"
+        :class="{ 'three__container--drag': isDragging, 'cursor-pointer': isHoveringPlanet }"
     ></div>
 </template>
 
@@ -16,7 +16,8 @@ import emitter from '@/services/emitter.service';
 export default {
     data() {
         return {
-            isHoveringPlanet: false
+            isHoveringPlanet: false,
+            isDragging: false
         };
     },
 
@@ -25,6 +26,10 @@ export default {
 
         this.initThree();
         this.initialize();
+
+        emitter.on('isDragging', (value) => {
+            this.isDragging = value;
+        });
 
         window.addEventListener('resize', this.onResize);
     },
@@ -38,7 +43,6 @@ export default {
     methods: {
         initThree() {
             // Renderer
-
             this.renderer = new THREE.WebGLRenderer({
                 alpha: true,
                 premultipliedAlpha: false
@@ -57,9 +61,7 @@ export default {
             this.$refs.container.appendChild(this.renderer.domElement);
 
             // Scene
-
             this.scene = new THREE.Scene();
-
             this.scene.background = null;
 
             // Camera
@@ -69,13 +71,11 @@ export default {
                 0.1,
                 1000
             );
-
             this.camera.position.set(0, 0, 22);
 
             // World root
             this.skyRoot = new THREE.Group();
             this.scene.add(this.skyRoot);
-
             this.worldRoot = new THREE.Group();
             this.scene.add(this.worldRoot);
         },
@@ -106,16 +106,27 @@ export default {
 
                 this.isHoveringPlanet = value;
             });
-            emitter.on('');
         },
 
         onResize() {
             this.camera.aspect = window.innerWidth / window.innerHeight;
-
             this.camera.updateProjectionMatrix();
-
             this.renderer.setSize(window.innerWidth, window.innerHeight);
         }
     }
 };
 </script>
+
+<style lang="scss" scoped>
+.three__container {
+    cursor: grab;
+
+    &--drag {
+        cursor: grabbing;
+    }
+
+    &.cursor-pointer {
+        cursor: pointer;
+    }
+}
+</style>

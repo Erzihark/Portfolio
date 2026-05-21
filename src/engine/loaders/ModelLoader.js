@@ -8,7 +8,6 @@ export default class ModelLoader {
   }
 
   async load(path) {
-    // Return deep clone from cache
     if (this.cache.has(path)) {
       const cached = this.cache.get(path);
 
@@ -70,9 +69,6 @@ export default class ModelLoader {
       }
     }
 
-    //
-    // This is VERY important for postprocessing stability
-    //
     cloned.needsUpdate = true;
 
     return cloned;

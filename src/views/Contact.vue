@@ -66,8 +66,12 @@
                 required
             ></textarea>
 
-            <button class="contact__form__submit" type="submit" :disabled="isSending">
-                {{ isSending ? 'Sending...' : 'Submit' }}
+            <button
+                class="contact__form__submit michroma-regular"
+                type="submit"
+                :disabled="isSending"
+            >
+                {{ isSending ? 'SENDING...' : 'SUBMIT' }}
             </button>
 
             <div v-if="successMessage" class="contact__form--success">
@@ -148,10 +152,18 @@ export default {
         color: white;
     }
     &__vitals {
+        &__title {
+            margin-bottom: 16px;
+
+            strong {
+                color: #90cf38;
+            }
+        }
+
         &__info {
             margin: 8px 0;
             font-size: 15px;
-
+            margin-bottom: 16px;
             .fas {
                 font-size: 12px;
             }
@@ -192,16 +204,11 @@ export default {
 
         &__submit {
             padding: 12px;
-
             border: none;
             border-radius: 6px;
-
             background-image: linear-gradient(#2ea043, #237a33);
-
             color: white;
-
             cursor: pointer;
-
             transition: 0.2s;
 
             &:hover:not(:disabled) {

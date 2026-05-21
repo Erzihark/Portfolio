@@ -45,7 +45,7 @@
                     <li class="experience__item">
                         Developed and integrated interactive, multiplatform ad experiences (2D, AR
                         and physics-based) using Vue.js, Phaser, Three.js and ammo.js, including
-                        real-time event tracking via postMessage for analytics and BI systems.
+                        real-time event tracking for analytics and BI systems.
                     </li>
 
                     <li class="experience__item">
@@ -232,8 +232,9 @@ export default {
         position: relative;
         color: rgba(240, 246, 252, 0.88);
         line-height: 1.5;
-        font-size: 0.8rem;
+        font-size: 0.9rem;
         margin-left: 16px;
+        font-family: monospace;
 
         &::marker {
             color: #90cf38;

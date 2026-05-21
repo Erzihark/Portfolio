@@ -1,5 +1,5 @@
 import emitter from '../services/emitter.service';
-import PlanetFactory from './PlanetFactory';
+import PlanetFactory from './factories/PlanetFactory';
 import Bloom from './effects/Bloom';
 import ModelLoader from './loaders/ModelLoader';
 import * as THREE from 'three';

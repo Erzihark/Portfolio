@@ -6,11 +6,9 @@
             'wrapper--desktop': !isMobile
         }"
     >
-        <base-spinner v-if="spinner"></base-spinner>
-
         <template v-if="ready">
-            <portfolio-scene />
-            <portfolio-overlay :isMobile="isMobile" />
+            <app-scene />
+            <app-overlay :isMobile="isMobile" />
         </template>
     </div>
 </template>
@@ -20,9 +18,8 @@ import CONFIG from '@/config';
 import defer from 'promise-defer';
 import Preloader from '@/services/preloader.service';
 import SoundManager from '@/services/sound-manager.service';
-import BaseSpinner from '@/components/BaseSpinner.vue';
-import PortfolioScene from './components/PortfolioScene.vue';
-import PortfolioOverlay from './components/PortfolioOverlay.vue';
+import AppScene from './components/AppScene.vue';
+import AppOverlay from './components/AppOverlay.vue';
 
 export default {
     name: 'App',
@@ -31,7 +28,6 @@ export default {
         return {
             assets: CONFIG.assets,
             ready: false,
-            spinner: true,
             defers: {
                 imagesReady: new defer()
             },
@@ -70,8 +66,6 @@ export default {
     },
 
     created() {
-        this.showSpinner();
-
         this.setPreloader();
 
         Promise.all([this.defers.imagesReady.promise]).then(() => {
@@ -86,7 +80,6 @@ export default {
         },
 
         onDataReady() {
-            this.hideSpinner();
             this.ready = true;
         },
         setPreloader() {
@@ -115,21 +108,12 @@ export default {
 
         onTransitionEnd() {
             this.isTransitioning = false;
-        },
-
-        showSpinner() {
-            this.spinner = true;
-        },
-
-        hideSpinner() {
-            this.spinner = false;
         }
     },
 
     components: {
-        BaseSpinner,
-        PortfolioScene,
-        PortfolioOverlay
+        AppScene,
+        AppOverlay
     }
 };
 </script>
@@ -178,10 +162,6 @@ body {
         position: absolute;
         cursor: pointer;
     }
-}
-
-.cursor-pointer {
-    cursor: pointer;
 }
 
 .michroma-regular {

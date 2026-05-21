@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import emitter from '../services/emitter.service';
 
 export default class InputController {
   constructor(renderer, worldRoot, worldEngine) {
@@ -27,19 +28,17 @@ export default class InputController {
     canvas.style.touchAction = 'none';
 
     canvas.addEventListener('pointerdown', this.onPointerDown, { passive: false });
-
     window.addEventListener('pointermove', this.onPointerMove, { passive: false });
-
     window.addEventListener('pointerup', this.onPointerUp);
   }
 
   onPointerDown = (e) => {
     e.preventDefault();
 
-    // Ignore second finger
     if (!e.isPrimary) return;
 
     this.isDragging = true;
+    emitter.emit('isDragging', true);
 
     this.previousPointer.x = e.clientX;
     this.previousPointer.y = e.clientY;
@@ -53,20 +52,18 @@ export default class InputController {
     e.preventDefault();
 
     const deltaX = e.clientX - this.previousPointer.x;
-    const deltaY = e.clientY - this.previousPointer.y;
 
     this.previousPointer.x = e.clientX;
     this.previousPointer.y = e.clientY;
 
-    // Mobile-friendly sensitivity
     const mobileMultiplier = e.pointerType === 'touch' ? 1.8 : 1;
 
-    this.rotationVelocity.x += deltaY * this.dragSensitivity * mobileMultiplier;
     this.rotationVelocity.y += deltaX * this.dragSensitivity * mobileMultiplier;
   };
 
   onPointerUp = (e) => {
     this.isDragging = false;
+    emitter.emit('isDragging', false);
 
     this.renderer.domElement.releasePointerCapture(e.pointerId);
   };
@@ -74,10 +71,7 @@ export default class InputController {
   update() {
     if (!this.worldRoot) return;
 
-    this.worldRoot.rotation.x += this.rotationVelocity.x;
-
     this.worldRoot.rotation.y += this.rotationVelocity.y;
-
     this.rotationVelocity.multiplyScalar(this.damping);
   }
 
@@ -85,9 +79,7 @@ export default class InputController {
     const canvas = this.renderer.domElement;
 
     canvas.removeEventListener('pointerdown', this.onPointerDown);
-
     window.removeEventListener('pointermove', this.onPointerMove);
-
     window.removeEventListener('pointerup', this.onPointerUp);
   }
 }

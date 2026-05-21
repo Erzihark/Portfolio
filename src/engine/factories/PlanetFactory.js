@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import ModelLoader from './loaders/ModelLoader';
-import { normalizeModel } from './utils/normalize-model.util';
+import ModelLoader from '../loaders/ModelLoader';
+import { normalizeModel } from '../utils/normalize-model.util';
 
 const BLOOM_LAYER = 1;
 

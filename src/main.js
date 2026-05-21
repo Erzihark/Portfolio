@@ -4,8 +4,6 @@ import CONFIG from './config';
 import mitt from 'mitt';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-//new FPSCounter();
-
 const parse = (val) => {
   let result = false;
   let tmp = [];

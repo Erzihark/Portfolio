@@ -66,9 +66,9 @@ export default {
 
             planetButtons: [
                 { text: 'Home', go_to: 'home' },
-                { text: 'Projects', go_to: 'projects' },
-                { text: 'Skills', go_to: 'skills' },
                 { text: 'Experience', go_to: 'experience' },
+                { text: 'Skills', go_to: 'skills' },
+                { text: 'Projects', go_to: 'projects' },
                 { text: 'Contact', go_to: 'contact' }
             ]
         };
@@ -126,15 +126,11 @@ export default {
 
         &__button {
             background-image: linear-gradient(#2ea04391, #2ea04344);
-
             border: 2px solid rgba(46, 160, 67, 0.4);
-            border-radius: 4px;
-
+            border-radius: 4px 4px 24px 4px;
             color: #f0f6fc;
-
-            padding: 8px;
+            padding: 8px 12px 8px 8px;
             text-align: center;
-
             background-color: unset;
 
             transition:
