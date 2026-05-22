@@ -11,7 +11,7 @@ export default class SkyManager {
   init() {
     const textureLoader = new THREE.TextureLoader();
 
-    const texture = textureLoader.load('/images/environment.jpg');
+    const texture = textureLoader.load(`${import.meta.env.BASE_URL}images/environment.jpg`);
 
     texture.colorSpace = THREE.SRGBColorSpace;
 

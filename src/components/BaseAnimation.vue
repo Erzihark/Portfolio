@@ -29,7 +29,7 @@ export default {
                 renderer: 'svg',
                 loop: this.loop,
                 autoplay: true,
-                path: '/animations/' + this.type + '.json'
+                path: `${import.meta.env.BASE_URL}animations/${this.type}.json`
             };
 
             this.animation = window.lottie.loadAnimation({
