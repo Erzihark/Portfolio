@@ -89,7 +89,7 @@ export default class PlanetFactory {
   async createCenterPlanet() {
     return this.createPlanet({
       id: 'home',
-      modelPath: '/models/center.glb',
+      modelPath: `${import.meta.env.BASE_URL}models/center.glb`,
       position: new THREE.Vector3(0, 0, 0),
       size: 1.4,
       glowColor: new THREE.Color(0x6cbcff)
@@ -99,7 +99,7 @@ export default class PlanetFactory {
   async createContactPlanet() {
     return this.createPlanet({
       id: 'contact',
-      modelPath: '/models/contact.glb',
+      modelPath: `${import.meta.env.BASE_URL}models/contact.glb`,
       position: new THREE.Vector3(0, 0, 10),
       size: 0.9,
       glowColor: new THREE.Color(0xdedede)
@@ -109,7 +109,7 @@ export default class PlanetFactory {
   async createProjectsPlanet() {
     return this.createPlanet({
       id: 'projects',
-      modelPath: '/models/projects.glb',
+      modelPath: `${import.meta.env.BASE_URL}models/projects.glb`,
       position: new THREE.Vector3(8, 0, 0),
       size: 1,
       glowColor: new THREE.Color(0xffb347)
@@ -119,7 +119,7 @@ export default class PlanetFactory {
   async createSkillsPlanet() {
     return this.createPlanet({
       id: 'skills',
-      modelPath: '/models/skills.glb',
+      modelPath: `${import.meta.env.BASE_URL}models/skills.glb`,
       position: new THREE.Vector3(-8, 0, 0),
       size: 1.1,
       glowColor: new THREE.Color(0x5cff95)
@@ -129,7 +129,7 @@ export default class PlanetFactory {
   async createExperiencePlanet() {
     return this.createPlanet({
       id: 'experience',
-      modelPath: '/models/experience.glb',
+      modelPath: `${import.meta.env.BASE_URL}models/experience.glb`,
       position: new THREE.Vector3(0, 0, -10),
       size: 1.1,
       glowColor: new THREE.Color(0xff6b6b)

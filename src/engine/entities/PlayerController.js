@@ -16,7 +16,7 @@ export default class PlayerController {
   }
 
   async init() {
-    const gltf = await this.modelLoader.load('/models/ship.glb');
+    const gltf = await this.modelLoader.load(`${import.meta.env.BASE_URL}models/ship.glb`);
 
     this.player = gltf.scene;
 

@@ -1,5 +1,5 @@
-const isLocal = window.location.hostname === 'localhost';
-const PATH = isLocal ? '/src/assets/' : '/assets/';
+import logo from './assets/logo.webp';
+import profile from './assets/profile.jpg';
 
 const CONFIG = {
   assets: {
@@ -7,8 +7,8 @@ const CONFIG = {
     // Images Preloader & Subsequent loader
     //
     images: {
-      preload: [PATH + 'logo.webp'],
-      subsequent: [PATH + 'profile.webp', PATH + 'unmute.svg']
+      preload: [logo],
+      subsequent: [profile]
     }
   }
 };
