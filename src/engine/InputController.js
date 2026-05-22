@@ -1,11 +1,12 @@
 import * as THREE from 'three';
 import emitter from '../services/emitter.service';
 
+import { EVENTS } from '@/constants/events';
+
 export default class InputController {
-  constructor(renderer, worldRoot, worldEngine) {
+  constructor(renderer, worldRoot) {
     this.renderer = renderer;
     this.worldRoot = worldRoot;
-    this.world = worldEngine;
 
     this.isDragging = false;
 
@@ -26,9 +27,12 @@ export default class InputController {
     const canvas = this.renderer.domElement;
 
     canvas.style.touchAction = 'none';
-
-    canvas.addEventListener('pointerdown', this.onPointerDown, { passive: false });
-    window.addEventListener('pointermove', this.onPointerMove, { passive: false });
+    canvas.addEventListener('pointerdown', this.onPointerDown, {
+      passive: false
+    });
+    window.addEventListener('pointermove', this.onPointerMove, {
+      passive: false
+    });
     window.addEventListener('pointerup', this.onPointerUp);
   }
 
@@ -38,7 +42,8 @@ export default class InputController {
     if (!e.isPrimary) return;
 
     this.isDragging = true;
-    emitter.emit('isDragging', true);
+
+    emitter.emit(EVENTS.IS_DRAGGING, true);
 
     this.previousPointer.x = e.clientX;
     this.previousPointer.y = e.clientY;
@@ -63,8 +68,7 @@ export default class InputController {
 
   onPointerUp = (e) => {
     this.isDragging = false;
-    emitter.emit('isDragging', false);
-
+    emitter.emit(EVENTS.IS_DRAGGING, false);
     this.renderer.domElement.releasePointerCapture(e.pointerId);
   };
 

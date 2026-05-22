@@ -18,7 +18,8 @@ export default class PlanetFactory {
     emissive = 0xffffff,
     emissiveIntensity = 1.5
   }) {
-    const mesh = await this.loader.load(modelPath);
+    const gltf = await this.loader.load(modelPath);
+    const mesh = gltf.scene;
 
     mesh.position.copy(position);
     //normalizeModel(mesh, size);

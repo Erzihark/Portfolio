@@ -2,16 +2,21 @@
     <div
         ref="container"
         class="three__container"
-        :class="{ 'three__container--drag': isDragging, 'cursor-pointer': isHoveringPlanet }"
+        :class="{
+            'three__container--drag': isDragging,
+            'cursor-pointer': isHoveringPlanet
+        }"
     ></div>
 </template>
 
 <script>
-import * as THREE from 'three';
-
-import WorldEngine from '@/engine/WorldEngine';
-import InputController from '@/engine/InputController';
 import emitter from '@/services/emitter.service';
+
+import { EVENTS } from '@/constants/events';
+
+import SceneManager from '@/engine/core/SceneManager';
+import WorldEngine from '@/engine/core/WorldEngine';
+import InputController from '@/engine/InputController';
 
 export default {
     data() {
@@ -22,96 +27,49 @@ export default {
     },
 
     mounted() {
-        this.onResize = this.onResize.bind(this);
+        this.sceneManager = new SceneManager(this.$refs.container);
 
-        this.initThree();
-        this.initialize();
+        this.input = new InputController(this.sceneManager.renderer, this.sceneManager.worldRoot);
 
-        emitter.on('isDragging', (value) => {
-            this.isDragging = value;
+        this.world = new WorldEngine({
+            scene: this.sceneManager.scene,
+            camera: this.sceneManager.camera,
+            renderer: this.sceneManager.renderer,
+            worldRoot: this.sceneManager.worldRoot,
+            skyRoot: this.sceneManager.skyRoot,
+            input: this.input
         });
+
+        this.world.init();
+
+        this.bindEvents();
 
         window.addEventListener('resize', this.onResize);
     },
 
     beforeUnmount() {
-        window.removeEventListener('resize', this.onResize);
-
         this.world?.destroy();
+
+        this.input?.destroy();
+
+        this.sceneManager?.destroy();
+
+        window.removeEventListener('resize', this.onResize);
     },
 
     methods: {
-        initThree() {
-            // Renderer
-            this.renderer = new THREE.WebGLRenderer({
-                alpha: true,
-                premultipliedAlpha: false
-            });
-
-            this.renderer.setSize(window.innerWidth, window.innerHeight);
-
-            this.renderer.setClearColor(0x000000, 0);
-
-            this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-
-            this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            this.renderer.toneMappingExposure = 1;
-            this.renderer.outputColorSpace = THREE.SRGBColorSpace;
-
-            this.$refs.container.appendChild(this.renderer.domElement);
-
-            // Scene
-            this.scene = new THREE.Scene();
-            this.scene.background = null;
-
-            // Camera
-            this.camera = new THREE.PerspectiveCamera(
-                75,
-                window.innerWidth / window.innerHeight,
-                0.1,
-                1000
-            );
-            this.camera.position.set(0, 0, 22);
-
-            // World root
-            this.skyRoot = new THREE.Group();
-            this.scene.add(this.skyRoot);
-            this.worldRoot = new THREE.Group();
-            this.scene.add(this.worldRoot);
-        },
-
-        initialize() {
-            this.world = new WorldEngine(
-                this.scene,
-                this.camera,
-                this.worldRoot,
-                this.skyRoot,
-                this.renderer
-            );
-
-            this.input = new InputController(this.renderer, this.worldRoot, this.world);
-
-            this.world.init({
-                input: this.input
-            });
-
-            this.setupEventListeners();
-        },
-
-        setupEventListeners() {
-            emitter.on('planet-hover', (value) => {
-                if (value === this.isHoveringPlanet) {
-                    return;
-                }
-
+        bindEvents() {
+            emitter.on(EVENTS.PLANET_HOVER, (value) => {
                 this.isHoveringPlanet = value;
+            });
+
+            emitter.on(EVENTS.IS_DRAGGING, (value) => {
+                this.isDragging = value;
             });
         },
 
         onResize() {
-            this.camera.aspect = window.innerWidth / window.innerHeight;
-            this.camera.updateProjectionMatrix();
-            this.renderer.setSize(window.innerWidth, window.innerHeight);
+            this.sceneManager.resize();
         }
     }
 };

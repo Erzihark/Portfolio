@@ -16,11 +16,7 @@
         </div>
 
         <base-modal
-            :modalTitle="
-                transitionPlanetId
-                    ? transitionPlanetId.charAt(0).toUpperCase() + transitionPlanetId.slice(1)
-                    : ''
-            "
+            :modalTitle="transitionPlanetId ? formatName(transitionPlanetId) : ''"
             :isMobile="isMobile"
             :open="isModalOpen"
             buttonText="X"
@@ -28,12 +24,15 @@
         >
             <component :is="currentComponent" />
         </base-modal>
+
+        <app-footer></app-footer>
     </div>
 </template>
 
 <script>
 import BaseAnimation from './BaseAnimation.vue';
 import AppHeader from './AppHeader.vue';
+import AppFooter from './AppFooter.vue';
 import BaseModal from './BaseModal.vue';
 import emitter from '@/services/emitter.service';
 import SkillsView from '../views/Skills.vue';
@@ -41,6 +40,7 @@ import ExperienceView from '../views/Experience.vue';
 import ProjectsView from '../views/Projects.vue';
 import ContactView from '../views/Contact.vue';
 import HomeView from '../views/Home.vue';
+import uppercaseFirst from '../utils/uppercase-first.util';
 
 export default {
     props: ['isMobile'],
@@ -85,6 +85,10 @@ export default {
             if (!value) {
                 emitter.emit('close-planet-view');
             }
+        },
+
+        formatName(name) {
+            return uppercaseFirst(name);
         }
     },
 
@@ -107,7 +111,8 @@ export default {
     components: {
         BaseAnimation,
         AppHeader,
-        BaseModal
+        BaseModal,
+        AppFooter
     }
 };
 </script>

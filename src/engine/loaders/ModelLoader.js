@@ -11,7 +11,10 @@ export default class ModelLoader {
     if (this.cache.has(path)) {
       const cached = this.cache.get(path);
 
-      return cached.clone(true);
+      return {
+        scene: cached.scene.clone(true),
+        animations: cached.animations
+      };
     }
 
     const gltf = await this.loader.loadAsync(path);
@@ -36,9 +39,15 @@ export default class ModelLoader {
       }
     });
 
-    this.cache.set(path, model);
+    this.cache.set(path, {
+      scene: model,
+      animations: gltf.animations
+    });
 
-    return model.clone(true);
+    return {
+      scene: model.clone(true),
+      animations: gltf.animations
+    };
   }
 
   prepareMaterial(material) {
