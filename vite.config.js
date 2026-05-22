@@ -4,6 +4,8 @@ import basicSsl from '@vitejs/plugin-basic-ssl';
 import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
+  base: '/Portfolio/',
+
   plugins: [
     vue({
       template: {
