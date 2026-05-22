@@ -56,6 +56,7 @@
 
 <script>
 import emitter from '@/services/emitter.service';
+import { EVENTS } from '@/constants/events';
 
 export default {
     props: ['isPlanetTransitioning', 'setModal', 'isMobile'],
@@ -78,7 +79,7 @@ export default {
         go(event, id) {
             this.menuOpen = false;
 
-            emitter.emit('navigate-to', { event, id });
+            emitter.emit(EVENTS.NAVIGATE_TO, { event, id });
         }
     }
 };

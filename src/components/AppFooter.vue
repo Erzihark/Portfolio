@@ -4,7 +4,7 @@
             class="footer__planet michroma-regular"
             :class="{ 'footer__planet--null': !targetablePlanet }"
         >
-            {{ targetablePlanet ? targetablePlanet.toUpperCase() : '' }}
+            {{ targetablePlanet ? targetablePlanet.toUpperCase() : 'DRAG A PLANET INTO VIEW' }}
         </div>
     </footer>
 </template>
@@ -14,23 +14,13 @@ import emitter from '@/services/emitter.service';
 import { EVENTS } from '@/constants/events';
 
 export default {
-    data() {
-        return {
-            targetablePlanet: null
-        };
-    },
-
-    mounted() {
-        emitter.on(EVENTS.PLANET_TARGETABLE, (value) => {
-            this.targetablePlanet = value;
-        });
-    },
+    props: ['targetablePlanet'],
 
     methods: {
         go(event, id) {
             this.menuOpen = false;
 
-            emitter.emit('navigate-to', { event, id });
+            emitter.emit(EVENTS.NAVIGATE_TO, { event, id });
         }
     }
 };
@@ -39,7 +29,7 @@ export default {
 <style lang="scss" scoped>
 .footer {
     position: fixed;
-    bottom: 10vh;
+    bottom: 12vh;
     width: 100%;
     height: 30px;
     display: flex;
@@ -50,7 +40,20 @@ export default {
         font-size: 2rem;
 
         &--null {
-            color: rgb(172, 166, 166);
+            color: rgba(172, 166, 166, 0.7);
+            font-size: 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        bottom: 5vh;
+
+        &__planet {
+            font-size: 1.2rem;
+
+            &--null {
+                font-size: 1rem;
+            }
         }
     }
 }

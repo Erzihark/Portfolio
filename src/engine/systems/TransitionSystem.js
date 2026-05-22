@@ -27,8 +27,6 @@ export default class TransitionSystem {
 
     if (planet === this.activePlanet) return;
 
-    if (this.isTransitioning) return;
-
     this.targetPlanet = planet;
 
     this.isTransitioning = true;

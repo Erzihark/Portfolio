@@ -8,8 +8,13 @@
     >
         <template v-if="ready">
             <app-scene />
-            <app-overlay :isMobile="isMobile" />
+            <div v-if="threeReady">
+                <app-overlay :isMobile="isMobile" />
+            </div>
         </template>
+        <div v-else>
+            <base-spinner></base-spinner>
+        </div>
     </div>
 </template>
 
@@ -17,9 +22,11 @@
 import CONFIG from '@/config';
 import defer from 'promise-defer';
 import Preloader from '@/services/preloader.service';
-import SoundManager from '@/services/sound-manager.service';
 import AppScene from './components/AppScene.vue';
 import AppOverlay from './components/AppOverlay.vue';
+import BaseSpinner from './components/BaseSpinner.vue';
+import emitter from '@/services/emitter.service';
+import { EVENTS } from '@/constants/events';
 
 export default {
     name: 'App',
@@ -28,20 +35,18 @@ export default {
         return {
             assets: CONFIG.assets,
             ready: false,
+            threeReady: false,
             defers: {
                 imagesReady: new defer()
             },
             isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
                 navigator.userAgent
             ),
-            isTransitioning: false,
-            soundManager: new SoundManager()
+            isTransitioning: false
         };
     },
 
     mounted() {
-        this.soundManager.init();
-
         const handleFirstInteraction = () => {
             document.removeEventListener('click', handleFirstInteraction);
             document.removeEventListener('touchstart', handleFirstInteraction);
@@ -52,15 +57,11 @@ export default {
         document.addEventListener('touchstart', handleFirstInteraction);
         document.addEventListener('keydown', handleFirstInteraction);
 
-        this.emitter.on('play-sound', (sound) => {
-            this.soundManager.play(sound);
-        });
-
-        this.emitter.on('toggle-sound', () => {
-            this.soundManager.toggle();
-        });
-
         window.addEventListener('resize', this.adjustViewportHeight);
+
+        emitter.on(EVENTS.WORLD_READY, () => {
+            this.threeReady = true;
+        });
 
         this.adjustViewportHeight();
     },
@@ -82,6 +83,7 @@ export default {
         onDataReady() {
             this.ready = true;
         },
+
         setPreloader() {
             const vm = this;
 
@@ -113,7 +115,8 @@ export default {
 
     components: {
         AppScene,
-        AppOverlay
+        AppOverlay,
+        BaseSpinner
     }
 };
 </script>

@@ -58,9 +58,6 @@ export default class ModelLoader {
     //
     const cloned = material.clone();
 
-    //
-    // Safe env map intensity
-    //
     if ('envMapIntensity' in cloned) {
       cloned.envMapIntensity = 1.5;
     }

@@ -1,17 +1,14 @@
 <template>
-    <div v-if="hasTransition">
-        <Transition name="fade" @leave="stopLottie">
-            <div v-if="!hasElapsed" class="animation" ref="animation"></div>
-        </Transition>
-    </div>
-    <div v-else class="animation" ref="animation"></div>
+    <Transition name="fade">
+        <div v-show="!targetablePlanet" class="animation" ref="animation"></div>
+    </Transition>
 </template>
 
 <script>
 export default {
     name: 'BaseAnimation',
 
-    props: ['type', 'loop', 'hasTransition', 'hasElapsed'],
+    props: ['type', 'loop', 'targetablePlanet'],
 
     data() {
         return {
@@ -20,7 +17,9 @@ export default {
     },
 
     mounted() {
-        this.animate();
+        setTimeout(() => {
+            this.animate();
+        }, 1200);
     },
 
     methods: {
@@ -33,18 +32,16 @@ export default {
                 path: '/animations/' + this.type + '.json'
             };
 
-            this.animation = window.lottie.loadAnimation({ ...options, ...this.options });
+            this.animation = window.lottie.loadAnimation({
+                ...options,
+                ...this.options
+            });
 
             this.animation.onComplete = () => {
                 this.$emit('onComplete');
             };
 
             this.$emit('onReady', this.animation);
-        },
-        stopLottie() {
-            if (this.animation) {
-                this.animation.stop();
-            }
         }
     },
 
@@ -62,14 +59,22 @@ export default {
     position: absolute;
     bottom: 5px;
     left: 5px;
-    width: 8vw;
-    height: 8vw;
+    width: 12vw;
+    height: 12vw;
 }
 
+.fade-enter-active,
 .fade-leave-active {
     transition: opacity 1.5s ease;
 }
+
+.fade-enter-from,
 .fade-leave-to {
     opacity: 0;
+}
+
+.fade-enter-to,
+.fade-leave-from {
+    opacity: 1;
 }
 </style>

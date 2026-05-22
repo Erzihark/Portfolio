@@ -26,16 +26,16 @@ export default class Bloom {
 
     this.composer.addPass(renderPass);
 
+    const bloomStrength = 1.3;
+    const bloomRadius = 3;
+    const bloomThreshold = 0.1;
+
     this.bloomPass = new UnrealBloomPass(
       new THREE.Vector2(window.innerWidth, window.innerHeight),
-      0.7,
-      0.3,
-      0.2
+      bloomStrength,
+      bloomRadius,
+      bloomThreshold
     );
-
-    this.bloomPass.threshold = 0.0;
-    this.bloomPass.strength = 1.6;
-    this.bloomPass.radius = 0.6;
 
     this.composer.addPass(this.bloomPass);
   }

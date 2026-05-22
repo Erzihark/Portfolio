@@ -82,6 +82,10 @@ export default class CameraController {
 
     if (!t.active) return;
 
+    emitter.emit(EVENTS.PLANET_TRANSITION_START, null);
+
+    this.restorePlanetVisibility();
+
     t.returning = true;
     t.progress = 0;
 
@@ -94,6 +98,19 @@ export default class CameraController {
 
   update(delta) {
     const t = this.transition;
+
+    this.planets.forEach((planet) => {
+      planet.currentOpacity = THREE.MathUtils.lerp(
+        planet.currentOpacity,
+        planet.targetOpacity,
+        0.08
+      );
+
+      forEachMaterial(planet.mesh, (material) => {
+        material.opacity = planet.currentOpacity;
+        material.depthWrite = planet.currentOpacity > 0.5;
+      });
+    });
 
     if (!t.active) return;
 
@@ -111,11 +128,9 @@ export default class CameraController {
       if (t.returning) {
         t.active = false;
         t.returning = false;
-
-        this.restorePlanetVisibility();
-      } else {
-        emitter.emit(EVENTS.PLANET_FOCUS_COMPLETE);
       }
+
+      emitter.emit(EVENTS.PLANET_FOCUS_COMPLETE);
     }
   }
 
@@ -123,30 +138,13 @@ export default class CameraController {
     this.planets.forEach((planet) => {
       const focused = planet === focusedPlanet;
 
-      forEachMaterial(planet.mesh, (material) => {
-        material.transparent = true;
-
-        if (focused) {
-          material.opacity = 1;
-          material.depthWrite = true;
-        } else {
-          material.opacity = 0.08;
-          material.depthWrite = false;
-        }
-
-        material.needsUpdate = true;
-      });
+      planet.targetOpacity = focused ? 1 : 0.08;
     });
   }
 
   restorePlanetVisibility() {
     this.planets.forEach((planet) => {
-      forEachMaterial(planet.mesh, (material) => {
-        material.opacity = 1;
-        material.transparent = false;
-        material.depthWrite = true;
-        material.needsUpdate = true;
-      });
+      planet.targetOpacity = 1;
     });
   }
 }

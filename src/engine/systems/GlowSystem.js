@@ -6,6 +6,7 @@ export default class GlowSystem {
   constructor(camera, planets) {
     this.camera = camera;
     this.planets = planets;
+    this.time = 0;
 
     this.tmpCameraForward = new THREE.Vector3();
     this.tmpCameraWorldPos = new THREE.Vector3();
@@ -15,6 +16,8 @@ export default class GlowSystem {
   }
 
   update() {
+    this.time += 0.03;
+
     const camera = this.camera;
 
     camera.getWorldDirection(this.tmpCameraForward);
@@ -27,7 +30,7 @@ export default class GlowSystem {
     const homeDistance = this.tmpCameraWorldPos.distanceTo(this.tmpHomeWorldPos);
 
     let bestPlanet = null;
-    let bestAlignment = 0.9;
+    let bestAlignment = 0.96;
 
     this.planets.forEach((planet) => {
       if (planet === homePlanet) {
@@ -56,16 +59,17 @@ export default class GlowSystem {
 
     this.planets.forEach((planet) => {
       const targetable = planet === bestPlanet;
+      const pulse = (Math.sin(this.time * 2.5) + 1) * 0.5;
 
       if (planet.isTargetable !== targetable && planet !== homePlanet) {
         planet.isTargetable = targetable;
-
-        if (targetable) {
-          emitter.emit(EVENTS.PLANET_TARGETABLE, planet.id);
-        }
       }
 
-      planet.mesh.scale.setScalar(targetable ? 1.5 : 1);
+      const pulseScale = targetable ? 1.35 + pulse * 0.12 : 1;
+
+      const finalScale = planet.baseScale * pulseScale;
+
+      planet.mesh.scale.lerp(new THREE.Vector3(finalScale, finalScale, finalScale), 0.3);
 
       if (targetable) {
         planet.mesh.rotation.y += 0.05;
@@ -82,13 +86,16 @@ export default class GlowSystem {
           }
 
           if (targetable) {
-            material.emissive.set(0x00ffff);
-            material.emissiveIntensity = 10;
+            material.emissiveIntensity = 0.2 + pulse / 6;
+            material.envMapIntensity = 2;
           } else {
-            material.emissiveIntensity = 0.1;
+            material.emissiveIntensity = 0.06;
+            material.envMapIntensity = 1;
           }
         });
       });
     });
+
+    emitter.emit(EVENTS.PLANET_TARGETABLE, bestPlanet ? bestPlanet.id : null);
   }
 }

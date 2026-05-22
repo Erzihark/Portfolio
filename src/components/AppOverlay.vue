@@ -10,8 +10,7 @@
             <base-animation
                 type="drag"
                 :loop="true"
-                :hasTransition="true"
-                :hasElapsed="hasElapsed"
+                :targetablePlanet="targetablePlanet"
             ></base-animation>
         </div>
 
@@ -25,7 +24,7 @@
             <component :is="currentComponent" />
         </base-modal>
 
-        <app-footer></app-footer>
+        <app-footer :targetablePlanet="targetablePlanet"></app-footer>
     </div>
 </template>
 
@@ -35,6 +34,7 @@ import AppHeader from './AppHeader.vue';
 import AppFooter from './AppFooter.vue';
 import BaseModal from './BaseModal.vue';
 import emitter from '@/services/emitter.service';
+import { EVENTS } from '@/constants/events';
 import SkillsView from '../views/Skills.vue';
 import ExperienceView from '../views/Experience.vue';
 import ProjectsView from '../views/Projects.vue';
@@ -47,14 +47,13 @@ export default {
 
     data() {
         return {
-            hasElapsed: false,
             animationDuration: 3,
             selectedView: null,
             isHoveringPlanet: false,
-            modalContent: 'test text',
             isModalOpen: false,
             isPlanetTransitioning: false,
-            transitionPlanetId: null
+            transitionPlanetId: null,
+            targetablePlanet: false
         };
     },
 
@@ -83,7 +82,7 @@ export default {
             this.isModalOpen = value;
 
             if (!value) {
-                emitter.emit('close-planet-view');
+                emitter.emit(EVENTS.CLOSE_PLANET_VIEW);
             }
         },
 
@@ -93,19 +92,22 @@ export default {
     },
 
     mounted() {
-        emitter.on('planet-focus-complete', () => {
-            this.setModal(true);
+        emitter.on(EVENTS.PLANET_FOCUS_COMPLETE, () => {
+            if (this.transitionPlanetId) {
+                this.setModal(true);
+            }
+
             this.isPlanetTransitioning = false;
         });
 
-        emitter.on('planet-transition-start', (id) => {
+        emitter.on(EVENTS.PLANET_TRANSITION_START, (id = null) => {
             this.isPlanetTransitioning = true;
             this.transitionPlanetId = id;
         });
 
-        setTimeout(() => {
-            this.hasElapsed = true;
-        }, this.animationDuration * 1000);
+        emitter.on(EVENTS.PLANET_TARGETABLE, (value) => {
+            this.targetablePlanet = value;
+        });
     },
 
     components: {
@@ -130,7 +132,8 @@ export default {
 
 .box {
     position: relative;
-    top: 98vh;
+    top: 100vh;
+    left: 42vw;
 }
 
 .fade-leave-active {

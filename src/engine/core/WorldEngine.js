@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 
 import emitter from '@/services/emitter.service';
-
 import { EVENTS } from '@/constants/events';
 
 import RenderLoop from './RenderLoop';
@@ -39,35 +38,21 @@ export default class WorldEngine {
 
   async init() {
     this.planetManager = new PlanetManager(this.worldRoot);
-
     this.planets = await this.planetManager.init();
-
     this.playerController = new PlayerController(this.scene);
 
     await this.playerController.init();
 
     this.skyManager = new SkyManager(this.skyRoot, this.input);
-
     this.skyManager.init();
-
     this.cameraController = new CameraController(this.camera, this.planets);
-
     this.glowSystem = new GlowSystem(this.camera, this.planets);
-
     this.interactionSystem = new PlanetInteractionSystem(this.camera, this.planets);
-
     this.activePlanet = this.planets[0];
-
     this.playerController.placeOnPlanet(this.activePlanet);
-
     this.worldRoot.rotation.x += 0.6;
-
     this.transitionSystem = new TransitionSystem(this.playerController);
-
     this.transitionSystem.setInitialPlanet(this.planets[0]);
-
-    emitter.emit(EVENTS.PLANET_CHANGED, this.activePlanet.id);
-
     emitter.emit(EVENTS.WORLD_READY);
 
     this.renderLoop.start();
