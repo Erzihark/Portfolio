@@ -6,6 +6,7 @@ export default class SkyManager {
     this.input = input;
 
     this.targetRotationY = 0;
+    this.rotationMagnitude = 1;
   }
 
   init() {
@@ -30,11 +31,15 @@ export default class SkyManager {
     this.root.add(this.sky);
   }
 
-  update() {
+  update(delta) {
     if (!this.input) return;
 
-    this.targetRotationY += this.input.rotationVelocity.y * 0.03;
+    const dt = delta * 60;
 
-    this.root.rotation.y += (this.targetRotationY - this.root.rotation.y) * 0.02;
+    this.targetRotationY += this.input.rotationVelocity.y * 0.03 * dt;
+
+    const alpha = 1 - Math.exp(-this.rotationMagnitude * delta);
+
+    this.root.rotation.y += (this.targetRotationY - this.root.rotation.y) * alpha;
   }
 }

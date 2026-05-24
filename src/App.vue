@@ -165,6 +165,11 @@ body {
         position: absolute;
         cursor: pointer;
     }
+
+    &--mobile {
+        width: 100%;
+        height: 100dvh;
+    }
 }
 
 .michroma-regular {

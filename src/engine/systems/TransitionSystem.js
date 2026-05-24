@@ -10,6 +10,7 @@ export default class TransitionSystem {
     this.targetPlanet = null;
 
     this.isTransitioning = false;
+    this.playerTransitionSpeed = 1.5;
 
     this.playerCorrectionQuaternion = playerController.correctionQuaternion;
 
@@ -42,10 +43,10 @@ export default class TransitionSystem {
       return;
     }
 
-    this.updatePlanetTransition();
+    this.updatePlanetTransition(delta);
   }
 
-  updatePlanetTransition() {
+  updatePlanetTransition(delta) {
     this.targetPlanet.mesh.getWorldPosition(this.tmpWorldPos);
 
     const outward = this.tmpDirection.copy(this.player.position).sub(this.tmpWorldPos).normalize();
@@ -54,7 +55,9 @@ export default class TransitionSystem {
       .copy(this.tmpWorldPos)
       .add(outward.multiplyScalar(this.targetPlanet.radius + 1.2));
 
-    this.player.position.lerp(targetPos, 0.05);
+    const alpha = 1 - Math.exp(-this.playerTransitionSpeed * delta);
+
+    this.player.position.lerp(targetPos, alpha);
 
     const moveDirection = targetPos.clone().sub(this.player.position).normalize();
 

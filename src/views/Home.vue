@@ -15,7 +15,7 @@
                 </h1>
 
                 <p class="about__description">
-                    Software Engineer with 4+ years of experience building high-performance web
+                    Software Engineer with 5++ years of experience building high-performance web
                     applications and interactive experiences using modern frontend ecosystems.
                 </p>
 
@@ -48,15 +48,14 @@
                 <div class="about__image-wrapper">
                     <div class="about__image-glow"></div>
 
-                    <!-- REPLACE PATH -->
                     <img class="about__image" src="../assets/profile.jpg" alt="Profile" />
                 </div>
 
                 <div class="about__stats">
                     <div class="about__stat">
-                        <div class="about__stat-value">4+</div>
+                        <div class="about__stat-value">5+</div>
 
-                        <div class="about__stat-label">Years Experience</div>
+                        <div class="about__stat-label">Years of Experience</div>
                     </div>
 
                     <div class="about__stat">
@@ -217,8 +216,11 @@ export default {
         margin-bottom: 20px;
         border-radius: 24px;
         overflow: hidden;
+        max-width: 280px;
         border: 1px solid rgba(144, 207, 56, 0.2);
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+        margin-left: auto;
+        margin-right: auto;
     }
 
     &__image-glow {
@@ -244,6 +246,7 @@ export default {
         flex-wrap: wrap;
         gap: 12px;
         margin-bottom: 20px;
+        justify-content: center;
     }
 
     &__stat {

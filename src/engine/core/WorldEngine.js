@@ -25,14 +25,11 @@ export default class WorldEngine {
     this.skyRoot = skyRoot;
     this.input = input;
 
+    this.clock = new THREE.Clock();
     this.bloom = new Bloom(renderer, scene, camera);
-
     this.renderLoop = new RenderLoop(this.update);
-
     this.activePlanet = null;
-
     this.setupLighting();
-
     this.bindEvents();
   }
 
@@ -47,7 +44,7 @@ export default class WorldEngine {
     this.skyManager.init();
     this.cameraController = new CameraController(this.camera, this.planets);
     this.glowSystem = new GlowSystem(this.camera, this.planets);
-    this.interactionSystem = new PlanetInteractionSystem(this.camera, this.planets);
+    this.interactionSystem = new PlanetInteractionSystem(this.renderer, this.camera, this.planets);
     this.activePlanet = this.planets[0];
     this.playerController.placeOnPlanet(this.activePlanet);
     this.worldRoot.rotation.x += 0.6;
@@ -80,9 +77,10 @@ export default class WorldEngine {
     if (id) {
       planet = this.planets.find((p) => p.id === id);
     } else {
-      this.interactionSystem.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+      const rect = this.renderer.domElement.getBoundingClientRect();
 
-      this.interactionSystem.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      this.interactionSystem.pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      this.interactionSystem.pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
       planet = this.interactionSystem.getIntersectedPlanet();
     }
@@ -110,14 +108,16 @@ export default class WorldEngine {
     this.scene.add(this.ambient);
   }
 
-  update = (delta) => {
-    this.input?.update();
+  update = () => {
+    const delta = this.clock.getDelta();
+
+    this.input?.update(delta);
 
     this.transitionSystem.update(delta);
 
-    this.glowSystem.update();
+    this.glowSystem.update(delta);
 
-    this.skyManager.update();
+    this.skyManager.update(delta);
 
     this.cameraController.update(delta);
 

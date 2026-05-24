@@ -369,11 +369,15 @@ export default {
 
     @media (max-width: 768px) {
         &__title {
-            font-size: 1.6rem;
+            font-size: 1.1rem;
+        }
+
+        &__description {
+            font-size: 0.9rem;
         }
 
         &__content {
-            padding: 20px;
+            padding: 12px;
         }
     }
 }

@@ -48,7 +48,9 @@ export default class InputController {
     this.previousPointer.x = e.clientX;
     this.previousPointer.y = e.clientY;
 
-    this.renderer.domElement.setPointerCapture(e.pointerId);
+    if (this.renderer.domElement.setPointerCapture) {
+      this.renderer.domElement.setPointerCapture(e.pointerId);
+    }
   };
 
   onPointerMove = (e) => {
@@ -69,14 +71,18 @@ export default class InputController {
   onPointerUp = (e) => {
     this.isDragging = false;
     emitter.emit(EVENTS.IS_DRAGGING, false);
-    this.renderer.domElement.releasePointerCapture(e.pointerId);
+
+    if (this.renderer.domElement.releasePointerCapture) {
+      this.renderer.domElement.releasePointerCapture(e.pointerId);
+    }
   };
 
-  update() {
-    if (!this.worldRoot) return;
+  update(delta) {
+    const dt = delta * 60;
 
-    this.worldRoot.rotation.y += this.rotationVelocity.y;
-    this.rotationVelocity.multiplyScalar(this.damping);
+    this.worldRoot.rotation.y += this.rotationVelocity.y * dt;
+
+    this.rotationVelocity.multiplyScalar(Math.pow(this.damping, dt));
   }
 
   destroy() {

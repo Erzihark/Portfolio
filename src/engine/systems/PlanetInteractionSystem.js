@@ -3,7 +3,8 @@ import emitter from '@/services/emitter.service';
 import { EVENTS } from '@/constants/events';
 
 export default class PlanetInteractionSystem {
-  constructor(camera, planets) {
+  constructor(renderer, camera, planets) {
+    this.renderer = renderer;
     this.camera = camera;
     this.planets = planets;
 
@@ -16,12 +17,17 @@ export default class PlanetInteractionSystem {
   }
 
   bindEvents() {
-    window.addEventListener('mousemove', this.onMouseMove);
+    window.addEventListener('pointermove', this.onPointerMove, {
+      passive: false
+    });
   }
 
-  onMouseMove = (event) => {
-    this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-    this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  onPointerMove = (event) => {
+    const rect = this.renderer.domElement.getBoundingClientRect();
+
+    this.pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+
+    this.pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
     this.updateHoverStatus();
   };
@@ -59,6 +65,6 @@ export default class PlanetInteractionSystem {
   }
 
   destroy() {
-    window.removeEventListener('mousemove', this.onMouseMove);
+    window.removeEventListener('mousemove', this.onPointerMove);
   }
 }

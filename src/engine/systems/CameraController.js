@@ -8,6 +8,7 @@ export default class CameraController {
     this.camera = camera;
     this.planets = planets;
 
+    this.planetOpacityChangeSpeed = 5;
     this.transition = {
       active: false,
       returning: false,
@@ -100,10 +101,12 @@ export default class CameraController {
     const t = this.transition;
 
     this.planets.forEach((planet) => {
+      const alpha = 1 - Math.exp(-this.planetOpacityChangeSpeed * delta);
+
       planet.currentOpacity = THREE.MathUtils.lerp(
         planet.currentOpacity,
         planet.targetOpacity,
-        0.08
+        alpha
       );
 
       forEachMaterial(planet.mesh, (material) => {

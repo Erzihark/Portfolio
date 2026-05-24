@@ -8,6 +8,8 @@ export default class GlowSystem {
     this.planets = planets;
     this.time = 0;
 
+    this.planetRotationSpeed = 1;
+    this.planetPulseSpeed = 18;
     this.tmpCameraForward = new THREE.Vector3();
     this.tmpCameraWorldPos = new THREE.Vector3();
     this.tmpHomeWorldPos = new THREE.Vector3();
@@ -15,8 +17,8 @@ export default class GlowSystem {
     this.tmpToPlanet = new THREE.Vector3();
   }
 
-  update() {
-    this.time += 0.03;
+  update(delta) {
+    this.time += delta;
 
     const camera = this.camera;
 
@@ -69,10 +71,12 @@ export default class GlowSystem {
 
       const finalScale = planet.baseScale * pulseScale;
 
-      planet.mesh.scale.lerp(new THREE.Vector3(finalScale, finalScale, finalScale), 0.3);
+      const alpha = 1 - Math.exp(-this.planetPulseSpeed * delta);
+
+      planet.mesh.scale.lerp(new THREE.Vector3(finalScale, finalScale, finalScale), alpha);
 
       if (targetable) {
-        planet.mesh.rotation.y += 0.05;
+        planet.mesh.rotation.y += this.planetRotationSpeed * delta;
       }
 
       planet.mesh.traverse((child) => {

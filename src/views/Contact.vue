@@ -162,10 +162,14 @@ export default {
 
         &__info {
             margin: 8px 0;
-            font-size: 15px;
+            font-size: 1rem;
             margin-bottom: 16px;
             .fas {
                 font-size: 12px;
+            }
+
+            @media (max-width: 768px) {
+                font-size: 0.8rem;
             }
         }
 

@@ -13,12 +13,18 @@ export default class Bloom {
   }
 
   setup() {
-    const renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, {
-      format: THREE.RGBAFormat,
-      type: THREE.HalfFloatType,
-      depthBuffer: true,
-      stencilBuffer: false
-    });
+    const scale = 0.7;
+
+    const renderTarget = new THREE.WebGLRenderTarget(
+      window.innerWidth * scale,
+      window.innerHeight * scale,
+      {
+        format: THREE.RGBAFormat,
+        //type: THREE.HalfFloatType,
+        depthBuffer: true,
+        stencilBuffer: false
+      }
+    );
 
     this.composer = new EffectComposer(this.renderer, renderTarget);
 
@@ -27,11 +33,11 @@ export default class Bloom {
     this.composer.addPass(renderPass);
 
     const bloomStrength = 1.3;
-    const bloomRadius = 3;
+    const bloomRadius = 2.5;
     const bloomThreshold = 0.1;
 
     this.bloomPass = new UnrealBloomPass(
-      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      new THREE.Vector2(window.innerWidth * scale, window.innerHeight * scale),
       bloomStrength,
       bloomRadius,
       bloomThreshold
@@ -45,6 +51,10 @@ export default class Bloom {
   }
 
   resize(width, height) {
-    this.composer.setSize(width, height);
+    const scale = 0.5;
+
+    this.composer.setSize(width * scale, height * scale);
+
+    this.bloomPass.setSize(width * scale, height * scale);
   }
 }

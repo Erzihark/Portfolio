@@ -17,7 +17,11 @@
                     <div class="bruno-ace-sc-regular">{{ modalTitle }}</div>
                     <button class="wrapper__button" @click="handleButtonClick">X</button>
                 </div>
-                <div class="modal__content michroma-regular">
+                <div
+                    ref="modalContent"
+                    class="modal__content michroma-regular"
+                    :class="{ 'modal__content--mobile': isMobile }"
+                >
                     <slot></slot>
                     <!-- Use slot to pass content from parent -->
                 </div>
@@ -49,6 +53,16 @@ export default {
         setTimeout(() => {
             this.animate = true;
         }, 300);
+    },
+
+    watch: {
+        open(newValue) {
+            if (newValue) {
+                this.$nextTick(() => {
+                    this.$refs.modalContent.scrollTop = 0;
+                });
+            }
+        }
     },
 
     methods: {
@@ -96,6 +110,10 @@ export default {
             overflow: auto;
             scrollbar-color: #90cf38 #2ea04391;
             scrollbar-width: thin;
+
+            &--mobile {
+                max-height: 77vh;
+            }
         }
 
         p {
@@ -120,7 +138,9 @@ export default {
         }
 
         &--mobile {
-            max-width: 400px;
+            max-height: 95%;
+            margin: 2vh 0;
+            width: 90%;
         }
     }
 }
