@@ -65,6 +65,6 @@ export default class PlanetInteractionSystem {
   }
 
   destroy() {
-    window.removeEventListener('mousemove', this.onPointerMove);
+    window.removeEventListener('pointermove', this.onPointerMove);
   }
 }

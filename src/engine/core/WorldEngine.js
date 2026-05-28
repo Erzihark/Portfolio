@@ -64,7 +64,7 @@ export default class WorldEngine {
       this.onPlanetClick(event, id);
     });
 
-    window.addEventListener('click', this.onPlanetClick);
+    window.addEventListener('pointerup', this.onPlanetClick);
   }
 
   onPlanetClick = (event, id = null) => {
@@ -78,9 +78,11 @@ export default class WorldEngine {
       planet = this.planets.find((p) => p.id === id);
     } else {
       const rect = this.renderer.domElement.getBoundingClientRect();
+      const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-      this.interactionSystem.pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      this.interactionSystem.pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+      // Update the system's pointer explicitly so the raycaster looks in the right spot
+      this.interactionSystem.pointer.set(x, y);
 
       planet = this.interactionSystem.getIntersectedPlanet();
     }
@@ -131,6 +133,6 @@ export default class WorldEngine {
 
     this.interactionSystem.destroy();
 
-    window.removeEventListener('click', this.onPlanetClick);
+    window.removeEventListener('pointerup', this.onPlanetClick);
   }
 }
