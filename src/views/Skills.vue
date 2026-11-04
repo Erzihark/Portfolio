@@ -1,171 +1,107 @@
 <template>
-    <section class="skills">
-        <div class="skills__background-glow"></div>
+    <section class="services">
+        <div class="services__glow"></div>
 
-        <div class="skills__container">
-            <!-- TECHNOLOGIES -->
-            <article class="skills__card">
-                <div class="skills__header">
-                    <h3 class="skills__title">Technologies</h3>
+        <div class="services__container">
+            <header class="services__intro">
+                <div class="services__eyebrow">{{ $t('services.eyebrow') }}</div>
+                <h2 class="services__heading">{{ $t('services.heading') }}</h2>
+            </header>
 
-                    <span class="skills__badge"> Frontend & Creative </span>
-                </div>
-
-                <div class="skills__grid">
-                    <div class="skills__item">
-                        <i class="fab fa-react"></i>
-                        <span>React</span>
+            <div class="services__grid">
+                <article
+                    v-for="(service, index) in $t('services.items')"
+                    :key="service.number"
+                    class="services__card"
+                >
+                    <div class="services__icon" aria-hidden="true">
+                        <i :class="icons[index]"></i>
                     </div>
+                    <div class="services__number" aria-hidden="true">{{ service.number }}</div>
+                    <h3 class="services__title">{{ service.title }}</h3>
+                    <p class="services__text">{{ service.text }}</p>
+                </article>
+            </div>
 
-                    <div class="skills__item">
-                        <i class="fab fa-vuejs"></i>
-                        <span>Vue</span>
-                    </div>
+            <div class="services__reassure">
+                <h3 class="services__reassure-title">{{ $t('services.noNeedTitle') }}</h3>
+                <p class="services__reassure-text">{{ $t('services.noNeedText') }}</p>
+            </div>
 
-                    <div class="skills__item">
-                        <i class="fab fa-angular"></i>
-                        <span>Angular</span>
-                    </div>
+            <section class="services__process" aria-labelledby="process-title">
+                <h3 id="process-title" class="services__process-title">
+                    {{ $t('services.processTitle') }}
+                </h3>
+                <ol class="services__steps">
+                    <li
+                        v-for="(step, index) in $t('services.steps')"
+                        :key="step.title"
+                        class="services__step"
+                    >
+                        <span class="services__step-number" aria-hidden="true">{{
+                            index + 1
+                        }}</span>
+                        <div>
+                            <div class="services__step-title">{{ step.title }}</div>
+                            <div class="services__step-text">{{ step.text }}</div>
+                        </div>
+                    </li>
+                </ol>
+            </section>
 
-                    <div class="skills__item">
-                        <span>Three.js</span>
-                    </div>
+            <section aria-labelledby="tech-title">
+                <h3 id="tech-title" class="services__tech-title">{{ $t('services.techTitle') }}</h3>
+                <ul class="services__stack">
+                    <li v-for="tech in $t('services.tech')" :key="tech">{{ tech }}</li>
+                </ul>
+            </section>
 
-                    <div class="skills__item">
-                        <i class="fab fa-docker"></i>
-                        <span>Docker</span>
-                    </div>
-
-                    <div class="skills__item">
-                        <i class="fab fa-git-alt"></i>
-                        <span>Git</span>
-                    </div>
-
-                    <div class="skills__item">
-                        <span>Material UI</span>
-                    </div>
-
-                    <div class="skills__item">
-                        <i class="fab fa-sass"></i>
-                        <span>Sass</span>
-                    </div>
-
-                    <div class="skills__item">
-                        <i class="fab fa-css3-alt"></i>
-                        <span>CSS</span>
-                    </div>
-
-                    <div class="skills__item">
-                        <i class="fab fa-html5"></i>
-                        <span>HTML</span>
-                    </div>
-
-                    <div class="skills__item">
-                        <span>Cypress</span>
-                    </div>
-
-                    <div class="skills__item">
-                        <span>Phaser</span>
-                    </div>
-                </div>
-            </article>
-
-            <!-- LANGUAGES -->
-            <article class="skills__card">
-                <div class="skills__header">
-                    <h3 class="skills__title">Languages</h3>
-
-                    <span class="skills__badge"> Backend & Systems </span>
-                </div>
-
-                <div class="skills__grid">
-                    <div class="skills__item">
-                        <i class="fab fa-js"></i>
-                        <span>JavaScript</span>
-                    </div>
-
-                    <div class="skills__item">
-                        <i class="fab fa-typescript"></i>
-                        <span>TypeScript</span>
-                    </div>
-
-                    <div class="skills__item">
-                        <i class="fab fa-php"></i>
-                        <span>PHP</span>
-                    </div>
-
-                    <div class="skills__item">
-                        <i class="fab fa-golang"></i>
-                        <span>Go</span>
-                    </div>
-
-                    <div class="skills__item">
-                        <span>C#</span>
-                    </div>
-                </div>
-            </article>
-
-            <!-- TOOLS -->
-            <article class="skills__card">
-                <div class="skills__header">
-                    <h3 class="skills__title">Tools</h3>
-
-                    <span class="skills__badge"> Workflow & Design </span>
-                </div>
-
-                <div class="skills__grid">
-                    <div class="skills__item">
-                        <i class="fab fa-jira"></i>
-                        <span>Jira</span>
-                    </div>
-
-                    <div class="skills__item">
-                        <i class="fab fa-jenkins"></i>
-                        <span>Jenkins</span>
-                    </div>
-
-                    <div class="skills__item">
-                        <i class="fab fa-linux"></i>
-                        <span>Linux</span>
-                    </div>
-
-                    <div class="skills__item">
-                        <i class="fab fa-vim"></i>
-                        <span>Vim</span>
-                    </div>
-
-                    <div class="skills__item">
-                        <span>VSCode</span>
-                    </div>
-
-                    <div class="skills__item">
-                        <span>Photoshop</span>
-                    </div>
-
-                    <div class="skills__item">
-                        <span>Blender</span>
-                    </div>
-                </div>
-            </article>
+            <div class="services__cta">
+                <p class="services__cta-text">{{ $t('services.cta') }}</p>
+                <button type="button" class="services__button" @click="openPlanet('contact')">
+                    {{ $t('common.startProject') }}
+                </button>
+            </div>
         </div>
     </section>
 </template>
 
 <script>
+import emitter from '@/services/emitter.service';
+import { EVENTS } from '@/constants/events';
+
 export default {
-    name: 'SkillsView'
+    name: 'SkillsView',
+
+    data() {
+        return {
+            icons: [
+                'fas fa-bolt',
+                'fas fa-cart-shopping',
+                'fas fa-chart-line',
+                'fas fa-wand-magic-sparkles'
+            ]
+        };
+    },
+
+    methods: {
+        openPlanet(id) {
+            emitter.emit(EVENTS.OPEN_PLANET, id);
+        }
+    }
 };
 </script>
 
 <style lang="scss" scoped>
-.skills {
+.services {
     position: relative;
     width: 100%;
     overflow: hidden;
     color: #f0f6fc;
-    font-size: 12px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-align: left;
 
-    &__background-glow {
+    &__glow {
         position: absolute;
         inset: 0;
         background:
@@ -180,123 +116,237 @@ export default {
         display: flex;
         flex-direction: column;
         gap: 24px;
-        padding: 8px;
+        padding: 12px;
+    }
+
+    &__eyebrow {
+        color: #90cf38;
+        font-size: 0.8rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    &__heading {
+        margin: 8px 0 0;
+        font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+        line-height: 1.25;
+        color: #ffffff;
+        text-wrap: balance;
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+    }
+
+    &__card {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 20px;
+        border-radius: 16px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+        border: 1px solid rgba(144, 207, 56, 0.18);
+        transition:
+            transform 0.25s ease,
+            border-color 0.25s ease;
+
+        &:hover {
+            transform: translateY(-4px);
+            border-color: rgba(144, 207, 56, 0.4);
+        }
+    }
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(144, 207, 56, 0.1);
+        border: 1px solid rgba(144, 207, 56, 0.25);
+        color: #90cf38;
+        font-size: 1.1rem;
     }
 
     &__card {
         position: relative;
-        overflow: hidden;
-        border-radius: 20px;
-        padding: 16px;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
-        border: 1px solid rgba(144, 207, 56, 0.18);
-        backdrop-filter: blur(14px);
-        box-shadow:
-            0 0 30px rgba(0, 0, 0, 0.35),
-            inset 0 1px 0 rgba(255, 255, 255, 0.05);
-        transition:
-            transform 0.25s ease,
-            border-color 0.25s ease,
-            box-shadow 0.25s ease;
-        &:hover {
-            transform: translateY(-4px);
-            border-color: rgba(144, 207, 56, 0.35);
-            box-shadow:
-                0 0 40px rgba(144, 207, 56, 0.08),
-                0 0 20px rgba(0, 0, 0, 0.35);
-        }
-        &::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(144, 207, 56, 0.8), transparent);
-            animation: skills-scan 6s linear infinite;
-        }
     }
 
-    &__header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 16px;
-        margin-bottom: 18px;
-
-        @media (max-width: 768px) {
-            flex-direction: column;
-            align-items: flex-start;
-        }
+    &__number {
+        position: absolute;
+        top: 16px;
+        right: 20px;
+        color: rgba(144, 207, 56, 0.55);
+        font-family: 'Michroma', sans-serif;
+        font-size: 0.9rem;
     }
 
     &__title {
         margin: 0;
-        font-size: 1rem;
-        font-weight: 700;
+        font-size: 1.1rem;
+        font-weight: 600;
         color: #ffffff;
-        letter-spacing: 1px;
-        text-transform: uppercase;
     }
 
-    &__badge {
-        padding: 6px 12px;
-        border-radius: 999px;
-        background: rgba(144, 207, 56, 0.12);
-        border: 1px solid rgba(144, 207, 56, 0.25);
-        color: #90cf38;
-        font-size: 0.5rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        white-space: nowrap;
+    &__reassure {
+        padding: 20px;
+        border-radius: 16px;
+        background: rgba(144, 207, 56, 0.08);
+        border: 1px solid rgba(144, 207, 56, 0.35);
     }
 
-    &__grid {
+    &__reassure-title {
+        margin: 0 0 8px;
+        font-size: 1.1rem;
+        color: #ffffff;
+    }
+
+    &__reassure-text {
+        margin: 0;
+        color: rgba(240, 246, 252, 0.9);
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    &__tech-title {
+        margin: 0 0 10px;
+        font-size: 0.85rem;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: rgba(240, 246, 252, 0.7);
+    }
+
+    &__text {
+        margin: 0;
+        color: rgba(240, 246, 252, 0.85);
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    &__stack {
         display: flex;
         flex-wrap: wrap;
+        gap: 6px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        li {
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(240, 246, 252, 0.8);
+            font-size: 0.78rem;
+        }
+    }
+
+    &__process {
+        padding: 20px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    &__process-title {
+        margin: 0 0 16px;
+        font-size: 1rem;
+        color: #ffffff;
+    }
+
+    &__steps {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    &__step {
+        display: flex;
         gap: 12px;
     }
 
-    &__item {
+    &__step-number {
+        flex: none;
         display: flex;
         align-items: center;
-        gap: 10px;
-        padding: 10px 14px;
-        border-radius: 12px;
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        color: rgba(240, 246, 252, 0.92);
-        font-size: 0.82rem;
-        font-family: monospace;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #90cf38;
+        color: #08110a;
+        font-size: 0.85rem;
+        font-weight: 700;
+    }
+
+    &__step-title {
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+    &__step-text {
+        margin-top: 4px;
+        color: rgba(240, 246, 252, 0.8);
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    &__cta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    &__cta-text {
+        margin: 0;
+        color: rgba(240, 246, 252, 0.9);
+        font-size: 1rem;
+    }
+
+    &__button {
+        min-height: 44px;
+        padding: 12px 20px;
+        border-radius: 10px;
+        border: 1px solid #90cf38;
+        background: #90cf38;
+        color: #08110a;
+        font-family: inherit;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
         transition:
             transform 0.2s ease,
-            border-color 0.2s ease,
-            background 0.2s ease;
+            box-shadow 0.2s ease;
 
         &:hover {
             transform: translateY(-2px);
-            border-color: rgba(144, 207, 56, 0.35);
-            background: rgba(144, 207, 56, 0.08);
+            box-shadow: 0 0 20px rgba(144, 207, 56, 0.3);
         }
 
-        i {
-            font-size: 1rem;
-            color: #90cf38;
-        }
-
-        span {
-            white-space: nowrap;
+        &:focus-visible {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
         }
     }
-}
 
-@keyframes skills-scan {
-    from {
-        left: -100%;
-    }
+    @media (prefers-reduced-motion: reduce) {
+        &__card,
+        &__button {
+            transition: none;
 
-    to {
-        left: 100%;
+            &:hover {
+                transform: none;
+            }
+        }
     }
 }
 </style>

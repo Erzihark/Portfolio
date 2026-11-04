@@ -12,10 +12,20 @@
                 v-if="animate"
                 class="modal animate__animated animate__slideInUp"
                 :class="{ 'modal--mobile': isMobile }"
+                role="dialog"
+                aria-modal="true"
+                :aria-label="modalTitle"
             >
                 <div class="modal__header">
                     <div class="bruno-ace-sc-regular">{{ modalTitle }}</div>
-                    <button class="wrapper__button" @click="handleButtonClick">X</button>
+                    <button
+                        ref="closeButton"
+                        class="wrapper__button"
+                        :aria-label="$t('common.close')"
+                        @click="handleButtonClick"
+                    >
+                        X
+                    </button>
                 </div>
                 <div
                     ref="modalContent"
@@ -53,6 +63,12 @@ export default {
         setTimeout(() => {
             this.animate = true;
         }, 300);
+
+        window.addEventListener('keydown', this.onKeydown);
+    },
+
+    beforeUnmount() {
+        window.removeEventListener('keydown', this.onKeydown);
     },
 
     watch: {
@@ -60,12 +76,19 @@ export default {
             if (newValue) {
                 this.$nextTick(() => {
                     this.$refs.modalContent.scrollTop = 0;
+                    this.$refs.closeButton?.focus();
                 });
             }
         }
     },
 
     methods: {
+        onKeydown(event) {
+            if (event.key === 'Escape' && this.open) {
+                this.handleButtonClick();
+            }
+        },
+
         handleButtonClick() {
             this.$emit('buttonClick');
         }
@@ -87,14 +110,15 @@ export default {
     justify-content: center;
 
     .modal {
+        background-color: #07110a;
         background-image: linear-gradient(#2ea04391, #2ea04344);
         border: 2px solid rgba(46, 160, 67, 0.4);
         border-radius: 4px;
         color: #f0f6fc;
         padding: 8px;
         text-align: center;
-        width: 80%;
-        max-width: 550px;
+        width: 90%;
+        max-width: 760px;
         box-sizing: border-box;
         text-align: center;
 
@@ -134,6 +158,11 @@ export default {
 
             &:hover {
                 color: #90cf38;
+            }
+
+            &:focus-visible {
+                outline: 2px solid #90cf38;
+                outline-offset: 2px;
             }
         }
 

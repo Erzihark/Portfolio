@@ -4,7 +4,7 @@
             class="footer__planet michroma-regular"
             :class="{ 'footer__planet--null': !targetablePlanet }"
         >
-            {{ targetablePlanet ? targetablePlanet.toUpperCase() : 'DRAG A PLANET INTO VIEW' }}
+            {{ targetablePlanet ? planetLabel(targetablePlanet).toUpperCase() : $t('hint') }}
         </div>
     </footer>
 </template>
@@ -13,13 +13,15 @@
 import emitter from '@/services/emitter.service';
 import { EVENTS } from '@/constants/events';
 
+import { planetLabel } from '@/constants/planets';
+
 export default {
     props: ['targetablePlanet'],
 
     methods: {
-        go(event, id) {
-            this.menuOpen = false;
+        planetLabel,
 
+        go(event, id) {
             emitter.emit(EVENTS.NAVIGATE_TO, { event, id });
         }
     }

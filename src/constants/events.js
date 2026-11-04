@@ -7,5 +7,6 @@ export const EVENTS = {
   PLANET_FOCUS_COMPLETE: 'planet-focus-complete',
   CLOSE_PLANET_VIEW: 'close-planet-view',
   NAVIGATE_TO: 'navigate-to',
+  OPEN_PLANET: 'open-planet',
   IS_DRAGGING: 'isDragging'
 };

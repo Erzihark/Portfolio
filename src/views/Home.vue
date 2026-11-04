@@ -1,99 +1,75 @@
 <template>
     <section class="about">
-        <div class="about__background-grid"></div>
-        <div class="about__background-glow"></div>
+        <div class="about__glow"></div>
 
         <div class="about__container">
-            <!-- LEFT -->
-            <div class="about__content">
-                <div class="about__eyebrow">SOFTWARE ENGINEER</div>
+            <div class="about__person">
+                <img
+                    class="about__avatar"
+                    src="../assets/profile.jpg"
+                    :alt="$t('home.portraitAlt')"
+                    width="72"
+                    height="72"
+                />
 
-                <h1 class="about__title">
-                    Building fast,
-                    <span class="about__title-highlight"> interactive </span>
-                    and scalable digital experiences.
-                </h1>
-
-                <p class="about__description">
-                    Software Engineer with 5++ years of experience building high-performance web
-                    applications and interactive experiences using modern frontend ecosystems.
-                </p>
-
-                <p class="about__description">
-                    Specialized in Frontend development with React and Vue, with a strong focus on
-                    performance optimization, scalable architecture, and complex UI systems — from
-                    enterprise platforms to immersive 2D, 3D and AR-powered experiences.
-                </p>
-
-                <p class="about__description">
-                    Passionate about solving complex engineering challenges at the intersection of
-                    performance, user experience and system design.
-                </p>
-
-                <div class="about__tags">
-                    <div class="about__tag">React</div>
-                    <div class="about__tag">Vue</div>
-                    <div class="about__tag">Three.js</div>
-                    <div class="about__tag">TypeScript</div>
-                    <div class="about__tag">Performance</div>
-                    <div class="about__tag">UI Systems</div>
-                </div>
-            </div>
-
-            <!-- RIGHT -->
-            <div class="about__panel">
-                <div class="about__panel-overlay"></div>
-
-                <!-- IMAGE -->
-                <div class="about__image-wrapper">
-                    <div class="about__image-glow"></div>
-
-                    <img class="about__image" src="../assets/profile.jpg" alt="Profile" />
-                </div>
-
-                <div class="about__stats">
-                    <div class="about__stat">
-                        <div class="about__stat-value">5+</div>
-
-                        <div class="about__stat-label">Years of Experience</div>
-                    </div>
-
-                    <div class="about__stat">
-                        <div class="about__stat-value">2D / 3D</div>
-
-                        <div class="about__stat-label">Interactive Systems</div>
-                    </div>
-                </div>
-
-                <div class="about__terminal">
-                    <div class="about__terminal-header">
-                        <div class="about__terminal-dots">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-
-                        <div class="about__terminal-title">system.log</div>
-                    </div>
-
-                    <div class="about__terminal-content">
-                        <div>> initializing frontend systems...</div>
-
-                        <div>> optimizing rendering pipeline...</div>
-
-                        <div>> loading interactive modules...</div>
-
-                        <div class="about__terminal-success">> status: operational</div>
+                <div>
+                    <div class="about__name">Manuel Carretero</div>
+                    <div class="about__availability">
+                        <span class="about__dot" aria-hidden="true"></span>
+                        {{ $t('home.availability') }}
                     </div>
                 </div>
             </div>
+
+            <div class="about__eyebrow">{{ $t('home.eyebrow') }}</div>
+
+            <h1 class="about__title">
+                {{ $t('home.titleBefore')
+                }}<span class="about__title-highlight">{{ $t('home.titleHighlight') }}</span
+                >{{ $t('home.titleAfter') }}
+            </h1>
+
+            <p class="about__description">{{ $t('home.description') }}</p>
+
+            <div class="about__actions">
+                <button type="button" class="about__button" @click="openPlanet('contact')">
+                    {{ $t('common.startProject') }}
+                </button>
+                <button
+                    type="button"
+                    class="about__button about__button--secondary"
+                    @click="openPlanet('projects')"
+                >
+                    {{ $t('home.seeWork') }}
+                </button>
+            </div>
+
+            <dl class="about__stats">
+                <div v-for="stat in $t('home.stats')" :key="stat.label" class="about__stat">
+                    <dt class="about__stat-value">{{ stat.value }}</dt>
+                    <dd class="about__stat-label">{{ stat.label }}</dd>
+                </div>
+            </dl>
+
+            <ul class="about__tags" :aria-label="$t('home.tagsLabel')">
+                <li v-for="tag in $t('home.tags')" :key="tag" class="about__tag">{{ tag }}</li>
+            </ul>
         </div>
     </section>
 </template>
 
 <script>
+import emitter from '@/services/emitter.service';
+import { EVENTS } from '@/constants/events';
+
 export default {
-    name: 'HomeView'
+    name: 'HomeView',
+
+    methods: {
+        openPlanet(id) {
+            emitter.emit(EVENTS.OPEN_PLANET, id);
+        }
+    }
 };
 </script>
 
@@ -103,69 +79,79 @@ export default {
     width: 100%;
     overflow: hidden;
     color: #f0f6fc;
-    font-size: 12px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-align: left;
 
-    &__background-grid {
-        position: absolute;
-        inset: 0;
-        background-image:
-            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-        background-size: 30px 30px;
-        mask-image: radial-gradient(circle at center, black 30%, transparent 100%);
-        pointer-events: none;
-    }
-
-    &__background-glow {
+    &__glow {
         position: absolute;
         inset: 0;
         background:
-            radial-gradient(circle at top left, rgba(144, 207, 56, 0.15), transparent 35%),
-            radial-gradient(circle at bottom right, rgba(72, 187, 255, 0.08), transparent 35%);
-
+            radial-gradient(circle at top left, rgba(144, 207, 56, 0.15), transparent 40%),
+            radial-gradient(circle at bottom right, rgba(72, 187, 255, 0.08), transparent 40%);
         pointer-events: none;
     }
 
     &__container {
         position: relative;
         z-index: 1;
-        display: grid;
-        grid-template-columns: 1.2fr 0.8fr;
-        gap: 24px;
-        padding: 8px;
-
-        @media (max-width: 900px) {
-            grid-template-columns: 1fr;
-        }
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 12px;
     }
 
-    &__content,
-    &__panel {
-        position: relative;
-        border-radius: 24px;
-        padding: 20px;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
-        border: 1px solid rgba(144, 207, 56, 0.14);
-        backdrop-filter: blur(14px);
-        box-shadow:
-            0 0 30px rgba(0, 0, 0, 0.35),
-            inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    &__person {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    &__avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(144, 207, 56, 0.5);
+    }
+
+    &__name {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+    &__availability {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 4px;
+        font-size: 0.85rem;
+        color: #c8f28d;
+    }
+
+    &__dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #90cf38;
+        box-shadow: 0 0 8px rgba(144, 207, 56, 0.8);
     }
 
     &__eyebrow {
-        margin-bottom: 16px;
         color: #90cf38;
-        font-size: 0.75rem;
+        font-size: 0.8rem;
         letter-spacing: 2px;
-        font-family: monospace;
+        text-transform: uppercase;
+        font-weight: 600;
     }
 
     &__title {
-        margin: 0 0 20px;
-        font-size: clamp(0.8rem, 3vw, 1.4rem);
-        line-height: 1.1;
-        font-weight: 800;
+        margin: 0;
+        font-size: clamp(1.4rem, 4vw, 2rem);
+        line-height: 1.2;
+        font-weight: 700;
         color: #ffffff;
+        text-wrap: balance;
     }
 
     &__title-highlight {
@@ -174,153 +160,110 @@ export default {
     }
 
     &__description {
-        margin: 0 0 18px;
-        color: rgba(240, 246, 252, 0.82);
-        line-height: 1.5;
-        font-size: 0.9rem;
-        text-align: left;
-        font-family: monospace;
+        margin: 0;
+        max-width: 60ch;
+        color: rgba(240, 246, 252, 0.88);
+        line-height: 1.65;
+        font-size: 1rem;
+    }
+
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    &__button {
+        min-height: 44px;
+        padding: 12px 20px;
+        border-radius: 10px;
+        border: 1px solid #90cf38;
+        background: #90cf38;
+        color: #08110a;
+        font-family: inherit;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            background-color 0.2s ease;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(144, 207, 56, 0.3);
+        }
+
+        &:focus-visible {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
+
+        &--secondary {
+            background: rgba(255, 255, 255, 0.04);
+            color: #f0f6fc;
+            border-color: rgba(255, 255, 255, 0.25);
+
+            &:hover {
+                box-shadow: 0 0 18px rgba(255, 255, 255, 0.1);
+            }
+        }
+    }
+
+    &__stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 12px;
+        margin: 0;
+    }
+
+    &__stat {
+        padding: 16px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(144, 207, 56, 0.18);
+    }
+
+    &__stat-value {
+        margin-bottom: 6px;
+        color: #90cf38;
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+
+    &__stat-label {
+        margin: 0;
+        color: rgba(240, 246, 252, 0.78);
+        font-size: 0.85rem;
+        line-height: 1.4;
     }
 
     &__tags {
         display: flex;
         flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 28px;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
     }
 
     &__tag {
-        padding: 8px 14px;
+        padding: 6px 12px;
         border-radius: 999px;
         background: rgba(144, 207, 56, 0.08);
-        border: 1px solid rgba(144, 207, 56, 0.2);
-        color: #90cf38;
-        font-size: 0.75rem;
-        letter-spacing: 1px;
-        font-family: monospace;
+        border: 1px solid rgba(144, 207, 56, 0.25);
+        color: #c8f28d;
+        font-size: 0.8rem;
     }
 
-    &__panel {
-        overflow: hidden;
-    }
+    @media (prefers-reduced-motion: reduce) {
+        &__button {
+            transition: none;
 
-    &__panel-overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(135deg, rgba(144, 207, 56, 0.08), transparent 40%);
-        pointer-events: none;
-    }
-
-    &__image-wrapper {
-        position: relative;
-        margin-bottom: 20px;
-        border-radius: 24px;
-        overflow: hidden;
-        max-width: 280px;
-        border: 1px solid rgba(144, 207, 56, 0.2);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    &__image-glow {
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at top, rgba(144, 207, 56, 0.2), transparent 60%);
-        pointer-events: none;
-        z-index: 1;
-    }
-
-    &__image {
-        position: relative;
-        z-index: 0;
-        display: block;
-        width: 100%;
-        object-fit: cover;
-        filter: saturate(1.05) contrast(1.02);
-    }
-
-    &__stats {
-        position: relative;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-bottom: 20px;
-        justify-content: center;
-    }
-
-    &__stat {
-        padding: 18px;
-        border-radius: 18px;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.04);
-        text-align: left;
-    }
-
-    &__stat-value {
-        margin-bottom: 8px;
-        color: #90cf38;
-        font-size: 1.5rem;
-        font-weight: 700;
-    }
-
-    &__stat-label {
-        color: rgba(240, 246, 252, 0.7);
-        font-size: 0.75rem;
-        line-height: 1.4;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    &__terminal {
-        position: relative;
-        overflow: hidden;
-        border-radius: 18px;
-        background: rgba(5, 10, 20, 0.75);
-        border: 1px solid rgba(144, 207, 56, 0.14);
-        font-family: monospace;
-    }
-
-    &__terminal-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 14px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        background: rgba(255, 255, 255, 0.02);
-    }
-
-    &__terminal-dots {
-        display: flex;
-        gap: 6px;
-        span {
-            width: 8px;
-            height: 8px;
-
-            border-radius: 50%;
-
-            background: rgba(255, 255, 255, 0.35);
+            &:hover {
+                transform: none;
+            }
         }
-    }
-
-    &__terminal-title {
-        color: rgba(240, 246, 252, 0.5);
-        font-size: 0.7rem;
-    }
-
-    &__terminal-content {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        padding: 16px;
-        color: rgba(240, 246, 252, 0.8);
-        font-size: 0.78rem;
-        line-height: 1.6;
-    }
-
-    &__terminal-success {
-        color: #90cf38;
-        text-shadow: 0 0 8px rgba(144, 207, 56, 0.3);
     }
 }
 </style>

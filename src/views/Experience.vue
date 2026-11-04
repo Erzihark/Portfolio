@@ -1,243 +1,277 @@
 <template>
-    <section class="experience">
-        <div class="experience__background-glow"></div>
+    <section class="results">
+        <div class="results__glow"></div>
 
-        <div class="experience__container">
-            <!-- EVOLVE -->
-            <article class="experience__card">
-                <div class="experience__header">
-                    <div>
-                        <h3 class="experience__role">Front End Engineer</h3>
+        <div class="results__container">
+            <header>
+                <div class="results__eyebrow">{{ $t('results.eyebrow') }}</div>
+                <h2 class="results__heading">{{ $t('results.heading') }}</h2>
+            </header>
 
-                        <div class="experience__company">Evolve Media LLC · Remote</div>
-                    </div>
+            <div class="results__grid">
+                <article
+                    v-for="item in $t('results.outcomes')"
+                    :key="item.label"
+                    class="results__card"
+                >
+                    <div class="results__value">{{ item.value }}</div>
+                    <h3 class="results__label">{{ item.label }}</h3>
+                    <p class="results__text">{{ item.text }}</p>
+                </article>
+            </div>
 
-                    <div class="experience__date">Oct 2022 – Apr 2026</div>
-                </div>
+            <section class="results__panel" aria-labelledby="also-title">
+                <h3 id="also-title" class="results__panel-title">{{ $t('results.alsoTitle') }}</h3>
+                <ul class="results__list">
+                    <li v-for="item in $t('results.also')" :key="item">{{ item }}</li>
+                </ul>
+            </section>
 
-                <ul class="experience__list">
-                    <li class="experience__item">
-                        Improved application performance by reducing Largest Contentful Paint from
-                        ~3s to ~0.7s (peaks 5s → 1s) through optimizations in rendering, lazy
-                        loading, state management, data loading and bundling, significantly
-                        enhancing internal productivity.
-                    </li>
-
-                    <li class="experience__item">
-                        Refactored frontend architecture across React and Angular applications,
-                        including Redux optimizations, migrations from React 16 to 19, and Angular
-                        10 to 18 upgrades, improving performance, stability, maintainability and
-                        reliability through enhanced error handling.
-                    </li>
-
-                    <li class="experience__item">
-                        Standardized and scaled frontend systems by migrating more than 20 forms to
-                        React Hook Form with reusable validation schemas and introducing type-safe
-                        models and shared abstractions across ~50 modules.
-                    </li>
-
-                    <li class="experience__item">
-                        Built and optimized data-heavy (1000+ entries) interfaces and complex
-                        multi-step workflows with shared validation state, pagination, filters,
-                        search parameters and conditional rendering using Vue.js and Vuetify.
-                    </li>
-
-                    <li class="experience__item">
-                        Developed and integrated interactive, multiplatform ad experiences (2D, AR
-                        and physics-based) using Vue.js, Phaser, Three.js and ammo.js, including
-                        real-time event tracking for analytics and BI systems.
-                    </li>
-
-                    <li class="experience__item">
-                        Improved reliability by implementing extensive end-to-end testing suites
-                        with Cypress and Playwright, significantly reducing production bugs and
-                        enabling safe large-scale refactoring.
-                    </li>
-
-                    <li class="experience__item">
-                        Authored technical documentation defining API contracts, improving
-                        collaboration between frontend and backend teams.
+            <section class="results__panel" aria-labelledby="background-title">
+                <h3 id="background-title" class="results__panel-title">
+                    {{ $t('results.backgroundTitle') }}
+                </h3>
+                <ul class="results__roles">
+                    <li v-for="job in $t('results.roles')" :key="job.company" class="results__role">
+                        <div class="results__role-head">
+                            <span class="results__role-name">{{ job.role }}</span>
+                            <span class="results__role-date">{{ job.date }}</span>
+                        </div>
+                        <div class="results__role-company">{{ job.company }}</div>
+                        <p class="results__role-text">{{ job.text }}</p>
                     </li>
                 </ul>
-            </article>
+            </section>
 
-            <!-- UNDOSTRES -->
-            <article class="experience__card">
-                <div class="experience__header">
-                    <div>
-                        <h3 class="experience__role">Software Engineer</h3>
-
-                        <div class="experience__company">UnDosTres · Remote</div>
-                    </div>
-
-                    <div class="experience__date">Jul 2021 – Jul 2022</div>
-                </div>
-
-                <ul class="experience__list">
-                    <li class="experience__item">
-                        Developed a credit card statement generation system by building an
-                        HTML-to-PDF pipeline in PHP and integrating with Go microservices to process
-                        and display transaction data.
-                    </li>
-
-                    <li class="experience__item">
-                        Implemented a heap-based algorithm in Go to efficiently compute top spending
-                        categories, enabling real-time insights without full dataset reprocessing.
-                    </li>
-
-                    <li class="experience__item">
-                        Contributed to backend API development and data modeling for credit card
-                        services, supporting transaction categorization and reporting features.
-                    </li>
-
-                    <li class="experience__item">
-                        Built onboarding and payment flows using Kotlin-based webviews, enabling
-                        users to apply for and manage credit cards across mobile platforms.
-                    </li>
-
-                    <li class="experience__item">
-                        Contributed to a PHP SDK that enabled third-party merchants to integrate
-                        with the company’s e-commerce platform.
-                    </li>
-                </ul>
-            </article>
+            <div class="results__cta">
+                <p class="results__cta-text">{{ $t('results.cta') }}</p>
+                <button type="button" class="results__button" @click="openPlanet('contact')">
+                    {{ $t('common.startProject') }}
+                </button>
+            </div>
         </div>
     </section>
 </template>
 
 <script>
+import emitter from '@/services/emitter.service';
+import { EVENTS } from '@/constants/events';
+
 export default {
-    name: 'ExperienceView'
+    name: 'ExperienceView',
+
+    methods: {
+        openPlanet(id) {
+            emitter.emit(EVENTS.OPEN_PLANET, id);
+        }
+    }
 };
 </script>
 
 <style lang="scss" scoped>
-.experience {
+.results {
     position: relative;
     width: 100%;
     overflow: hidden;
     color: #f0f6fc;
-    font-size: 12px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-align: left;
 
-    &__background-glow {
+    &__glow {
         position: absolute;
-
-        top: 20%;
+        top: 15%;
         left: 50%;
-
+        transform: translateX(-50%);
         width: 600px;
         height: 600px;
-
-        transform: translateX(-50%);
-
-        background: radial-gradient(circle, rgba(144, 207, 56, 0.12) 0%, rgba(144, 207, 56, 0) 70%);
-
+        max-width: 100%;
+        background: radial-gradient(circle, rgba(144, 207, 56, 0.1) 0%, rgba(144, 207, 56, 0) 70%);
         pointer-events: none;
     }
 
     &__container {
         position: relative;
-        padding: 8px;
         z-index: 1;
-        margin: 0 auto;
         display: flex;
         flex-direction: column;
-        gap: 32px;
+        gap: 24px;
+        padding: 12px;
     }
 
-    &__title {
-        font-size: 3rem;
+    &__eyebrow {
         color: #90cf38;
+        font-size: 0.8rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
 
-        margin-bottom: 24px;
+    &__heading {
+        margin: 8px 0 0;
+        font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+        line-height: 1.25;
+        color: #ffffff;
+        text-wrap: balance;
+    }
 
-        text-shadow: 0 0 12px rgba(144, 207, 56, 0.3);
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
     }
 
     &__card {
-        position: relative;
-        padding: 8px;
-
-        border-radius: 20px;
-
+        padding: 20px;
+        border-radius: 16px;
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
-
         border: 1px solid rgba(144, 207, 56, 0.18);
-
-        backdrop-filter: blur(14px);
-
-        box-shadow:
-            0 0 30px rgba(0, 0, 0, 0.35),
-            inset 0 1px 0 rgba(255, 255, 255, 0.05);
-
         transition:
             transform 0.25s ease,
-            border-color 0.25s ease,
-            box-shadow 0.25s ease;
+            border-color 0.25s ease;
 
         &:hover {
             transform: translateY(-4px);
-
             border-color: rgba(144, 207, 56, 0.4);
-
-            box-shadow:
-                0 0 40px rgba(144, 207, 56, 0.08),
-                0 0 20px rgba(0, 0, 0, 0.35);
         }
     }
 
-    &__header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 16px;
-        text-align: left;
-        margin-bottom: 28px;
-        padding-left: 8px;
-
-        @media (max-width: 768px) {
-            flex-direction: column;
-        }
-    }
-
-    &__role {
-        margin: 0;
-        font-size: 1.1rem;
+    &__value {
+        color: #90cf38;
+        font-size: 1.6rem;
         font-weight: 700;
+        line-height: 1.1;
+        text-shadow: 0 0 12px rgba(144, 207, 56, 0.3);
+    }
+
+    &__label {
+        margin: 8px 0;
+        font-size: 1rem;
+        font-weight: 600;
         color: #ffffff;
     }
 
-    &__company {
-        margin-top: 6px;
-        font-size: 0.8rem;
-        color: #90cf38;
+    &__text {
+        margin: 0;
+        color: rgba(240, 246, 252, 0.85);
+        font-size: 0.92rem;
+        line-height: 1.6;
     }
 
-    &__date {
-        padding-top: 4px;
-        font-size: 0.7rem;
-        color: rgba(240, 246, 252, 0.65);
-        white-space: nowrap;
+    &__panel {
+        padding: 20px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    &__panel-title {
+        margin: 0 0 12px;
+        font-size: 1rem;
+        color: #ffffff;
     }
 
     &__list {
-        text-align: left;
-        margin: 0;
         display: flex;
         flex-direction: column;
         gap: 8px;
+        margin: 0;
+        padding-left: 18px;
+        color: rgba(240, 246, 252, 0.85);
+        font-size: 0.92rem;
+        line-height: 1.5;
+
+        li::marker {
+            color: #90cf38;
+        }
     }
 
-    &__item {
-        position: relative;
-        color: rgba(240, 246, 252, 0.88);
-        line-height: 1.5;
-        font-size: 0.9rem;
-        margin-left: 16px;
-        font-family: monospace;
+    &__roles {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
 
-        &::marker {
-            color: #90cf38;
+    &__role-head {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 4px 16px;
+    }
+
+    &__role-name {
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+    &__role-date {
+        color: rgba(240, 246, 252, 0.7);
+        font-size: 0.85rem;
+    }
+
+    &__role-company {
+        margin-top: 2px;
+        color: #90cf38;
+        font-size: 0.88rem;
+    }
+
+    &__role-text {
+        margin: 6px 0 0;
+        color: rgba(240, 246, 252, 0.85);
+        font-size: 0.92rem;
+        line-height: 1.5;
+    }
+
+    &__cta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    &__cta-text {
+        margin: 0;
+        font-size: 1rem;
+        color: rgba(240, 246, 252, 0.9);
+    }
+
+    &__button {
+        min-height: 44px;
+        padding: 12px 20px;
+        border-radius: 10px;
+        border: 1px solid #90cf38;
+        background: #90cf38;
+        color: #08110a;
+        font-family: inherit;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(144, 207, 56, 0.3);
+        }
+
+        &:focus-visible {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        &__card,
+        &__button {
+            transition: none;
+
+            &:hover {
+                transform: none;
+            }
         }
     }
 }

@@ -15,7 +15,7 @@
         </div>
 
         <base-modal
-            :modalTitle="transitionPlanetId ? formatName(transitionPlanetId) : ''"
+            :modalTitle="transitionPlanetId ? planetLabel(transitionPlanetId) : ''"
             :isMobile="isMobile"
             :open="isModalOpen"
             buttonText="X"
@@ -40,7 +40,7 @@ import ExperienceView from '../views/Experience.vue';
 import ProjectsView from '../views/Projects.vue';
 import ContactView from '../views/Contact.vue';
 import HomeView from '../views/Home.vue';
-import uppercaseFirst from '../utils/uppercase-first.util';
+import { planetLabel } from '@/constants/planets';
 
 export default {
     props: ['isMobile'],
@@ -86,12 +86,30 @@ export default {
             }
         },
 
-        formatName(name) {
-            return uppercaseFirst(name);
+        planetLabel,
+
+        // Close the open modal, wait for the camera to return, then fly to the planet.
+        openPlanet(id) {
+            if (!this.isModalOpen) {
+                emitter.emit(EVENTS.NAVIGATE_TO, { event: null, id });
+                return;
+            }
+
+            if (this.isPlanetTransitioning || id === this.transitionPlanetId) return;
+
+            const onReturned = () => {
+                emitter.off(EVENTS.PLANET_FOCUS_COMPLETE, onReturned);
+                emitter.emit(EVENTS.NAVIGATE_TO, { event: null, id });
+            };
+
+            emitter.on(EVENTS.PLANET_FOCUS_COMPLETE, onReturned);
+            this.setModal(false);
         }
     },
 
     mounted() {
+        emitter.on(EVENTS.OPEN_PLANET, (id) => this.openPlanet(id));
+
         emitter.on(EVENTS.PLANET_FOCUS_COMPLETE, () => {
             if (this.transitionPlanetId) {
                 this.setModal(true);
