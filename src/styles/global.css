@@ -1,0 +1,133 @@
+:root {
+    color-scheme: dark;
+
+    /* Colors */
+    --color-bg: #07090d;
+    --color-surface: #0f131a;
+    --color-surface-2: #171c26;
+    --color-border: #252c3a;
+    --color-text: #f2f4f7;
+    --color-text-muted: #9aa4b2;
+    --color-accent: #4ade9b;
+    --color-on-accent: #04130c;
+    --color-accent-2: #ffb454;
+    --color-focus: #4ade9b;
+    --color-header-bg: rgb(7 9 13 / 0.72);
+    --color-accent-glow: rgb(74 222 155 / 0.35);
+
+    /* Fonts */
+    --font-heading: 'Space Grotesk Variable', system-ui, sans-serif;
+    --font-body: 'DM Sans Variable', system-ui, sans-serif;
+
+    /* Type scale */
+    --text-sm: clamp(0.875rem, 0.85rem + 0.1vw, 0.9375rem);
+    --text-base: 1rem;
+    --text-lg: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+    --text-xl: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+    --text-2xl: clamp(1.75rem, 1.2rem + 2.4vw, 2.75rem);
+    --text-3xl: clamp(2rem, 1.2rem + 3.6vw, 3.75rem);
+    --text-hero: clamp(2.5rem, 6vw + 1rem, 5.5rem);
+    --leading-body: 1.6;
+    --leading-tight: 1.05;
+
+    /* Spacing (4/8px rhythm) */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --space-24: 6rem;
+
+    /* Radii */
+    --radius-sm: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1.25rem;
+    --radius-full: 999px;
+
+    /* Z-index */
+    --z-base: 1;
+    --z-header: 50;
+    --z-menu: 60;
+    --z-skip: 100;
+
+    /* Motion */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur-fast: 150ms;
+    --dur-base: 300ms;
+    --dur-slow: 600ms;
+
+    /* Layout */
+    --container-max: 76rem;
+    --gutter: clamp(1rem, 4vw, 2.5rem);
+    --header-height: 4.5rem;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    min-height: 100dvh;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-body);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+}
+
+h1,
+h2,
+h3 {
+    font-family: var(--font-heading);
+    text-wrap: balance;
+}
+
+img,
+svg,
+canvas {
+    display: block;
+    max-width: 100%;
+}
+
+ul {
+    padding: 0;
+    list-style: none;
+}
+
+a {
+    color: inherit;
+}
+
+button {
+    font: inherit;
+    color: inherit;
+}
+
+:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

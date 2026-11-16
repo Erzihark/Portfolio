@@ -1,0 +1,11 @@
+---
+// THROWAWAY PROTOTYPE. Delete after the review.
+// Question: "Does the Crocky GLB load, look right and animate in three.js?"
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CrockyStage from '@/prototypes/crocky/CrockyStage.vue';
+---
+
+<BaseLayout title="PROTOTYPE · Crocky" description="Prototipo desechable de la mascota Crocky." locale="es">
+    <meta slot="head" name="robots" content="noindex, nofollow" />
+    <CrockyStage client:only="vue" />
+</BaseLayout>

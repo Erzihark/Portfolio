@@ -1,1 +1,0 @@
-import{Cs as e,V as t}from"./three.module-B8aseypB.js";function n(n,r=1){let i=new t().setFromObject(n),a=new e;i.getSize(a);let o=r/Math.max(a.x,a.y,a.z);n.scale.multiplyScalar(o)}export{n as t};

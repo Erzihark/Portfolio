@@ -1,0 +1,93 @@
+---
+import '@fontsource-variable/space-grotesk';
+import '@fontsource-variable/dm-sans';
+import '@/styles/global.css';
+import { localePath, useTranslations, type Locale } from '@/i18n';
+
+interface Props {
+    title: string;
+    description: string;
+    locale: Locale;
+}
+
+const { title, description, locale } = Astro.props;
+const t = useTranslations(locale);
+const site = Astro.site!;
+const base = import.meta.env.BASE_URL;
+const canonical = new URL(localePath(locale), site).href;
+const urlEs = new URL(localePath('es'), site).href;
+const urlEn = new URL(localePath('en'), site).href;
+const ogLocale = locale === 'es' ? 'es_MX' : 'en_US';
+const ogAlternate = locale === 'es' ? 'en_US' : 'es_MX';
+
+const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    name: 'Manuel Carretero',
+    description,
+    url: canonical,
+    areaServed: { '@type': 'Country', name: 'Mexico' },
+    availableLanguage: ['es', 'en']
+};
+---
+
+<!doctype html>
+<html lang={locale}>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <link rel="alternate" hreflang="es" href={urlEs} />
+        <link rel="alternate" hreflang="en" href={urlEn} />
+        <link rel="alternate" hreflang="x-default" href={urlEs} />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Manuel Carretero" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={t.meta.ogDescription} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:locale" content={ogLocale} />
+        <meta property="og:locale:alternate" content={ogAlternate} />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={t.meta.ogDescription} />
+        <meta name="theme-color" content="#07090D" />
+        <link rel="icon" href={`${base}favicon.ico`} sizes="32x32" />
+        <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
+        <link rel="icon" type="image/png" sizes="32x32" href={`${base}favicon-32x32.png`} />
+        <link rel="icon" type="image/png" sizes="16x16" href={`${base}favicon-16x16.png`} />
+        <link rel="apple-touch-icon" sizes="180x180" href={`${base}apple-touch-icon.png`} />
+        <link rel="manifest" href={`${base}site.webmanifest`} />
+        <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+        <slot name="head" />
+    </head>
+    <body>
+        <a class="skip-link" href="#main">
+            {t.skip}
+        </a>
+        <slot name="header" />
+        <main id="main">
+            <slot />
+        </main>
+        <slot name="footer" />
+    </body>
+</html>
+
+<style is:global>
+    .skip-link {
+        position: fixed;
+        top: var(--space-2);
+        left: var(--space-2);
+        z-index: var(--z-skip);
+        padding: var(--space-3) var(--space-4);
+        border-radius: var(--radius-sm);
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+        font-weight: 600;
+        transform: translateY(-200%);
+    }
+    .skip-link:focus {
+        transform: none;
+    }
+</style>
