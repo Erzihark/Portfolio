@@ -3,10 +3,7 @@
 import { ref, shallowRef, computed, watch, nextTick, defineAsyncComponent, onMounted, onBeforeUnmount } from 'vue';
 
 const meta: Record<string, { name: string; tests: string }> = {
-    v1: { name: 'Guía', tests: 'Split layout. Crocky on a HUD grid offers four chips; the matching service card lights up.' },
-    v2: { name: 'Taller', tests: 'Full-width workshop. Four low-poly builds assemble in a loop, one per service; Crocky watches.' },
-    v4: { name: 'Combinado', tests: 'v2 workshop with centred builds. Crocky is a fixed corner portrait (like v3) that comments on what you hover or focus.' },
-    v3: { name: 'Consola', tests: 'Text first and calm. Crocky is a small comms portrait that comments on the service panel you hover.' }
+    v4: { name: 'Combinado', tests: 'Workshop with centred builds. Crocky is a fixed corner portrait that comments on what you hover or focus.' },
 };
 
 const files = import.meta.glob('./variants/v*.vue');
@@ -114,7 +111,7 @@ const short = (k: string) => meta[k]?.name || k;
 <template>
     <div>
         <p v-if="!keys.length" class="proto-empty">
-            No variant files yet. Add files in src/prototypes/hero-crocky/variants/ named v1-*.vue, v2-*.vue, v3-*.vue.
+            No variant files yet. Add files in src/prototypes/hero-crocky/variants/ named v4-*.vue.
         </p>
         <Suspense v-else>
             <component :is="comp" :key="active" />

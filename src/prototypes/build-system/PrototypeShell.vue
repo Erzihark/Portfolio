@@ -1,11 +1,9 @@
 <script setup lang="ts">
-// Throwaway shell. It loads one hero variant and shows a switch bar.
-import { ref, shallowRef, computed, defineAsyncComponent, onMounted, onBeforeUnmount } from 'vue';
+// THROWAWAY PROTOTYPE. Shell for the build-system variants. It loads one variant and shows a switch bar.
+import { ref, shallowRef, computed, watch, nextTick, defineAsyncComponent, onMounted, onBeforeUnmount } from 'vue';
 
 const meta: Record<string, { name: string; tests: string }> = {
-    v1: { name: 'Ensamble', tests: 'Split layout. 3D pieces of scattered tools join into one system on scroll.' },
-    v2: { name: 'Recorrido', tests: 'Full-screen 3D. The camera moves through the chaos to an ordered system; large centered type.' },
-    v3: { name: 'Tarjetas', tests: 'No WebGL. Real-looking app cards (Excel, WhatsApp, Word) in CSS 3D join into one app.' }
+    v2: { name: 'Lado a lado', tests: 'Each pick builds in its own slot, one per service line. Simpler to read.' },
 };
 
 const files = import.meta.glob('./variants/v*.vue');
@@ -18,8 +16,23 @@ const comp = shallowRef<any>(null);
 const hidden = ref(false);
 const vw = ref(0);
 const vh = ref(0);
-const progress = ref(0);
 const fps = ref(0);
+const barEl = ref<HTMLElement | null>(null);
+// Publish the bar height so fixed elements can sit above it.
+let barRo: ResizeObserver | null = null;
+function setBarVar(px: number) {
+    document.documentElement.style.setProperty('--proto-bar-h', px + 'px');
+}
+watch([hidden, barEl], async () => {
+    await nextTick();
+    barRo?.disconnect();
+    if (hidden.value || !barEl.value) {
+        setBarVar(0);
+        return;
+    }
+    barRo = new ResizeObserver(() => setBarVar(barEl.value ? Math.round(barEl.value.getBoundingClientRect().height) + 12 : 0));
+    barRo.observe(barEl.value);
+});
 
 function readParam() {
     const v = new URL(location.href).searchParams.get('v');
@@ -53,13 +66,11 @@ function onKey(e: KeyboardEvent) {
     if (e.key === 'ArrowLeft') step(-1);
     else if (e.key === 'ArrowRight') step(1);
     else if (e.key === 'h' || e.key === 'H') hidden.value = !hidden.value;
-    else if (/^[1-3]$/.test(e.key) && keys.includes('v' + e.key)) select('v' + e.key);
+    else if (/^[1-9]$/.test(e.key) && keys.includes('v' + e.key)) select('v' + e.key);
 }
 function measure() {
     vw.value = window.innerWidth;
     vh.value = window.innerHeight;
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    progress.value = max > 0 ? Math.round((window.scrollY / max) * 100) : 0;
 }
 
 let raf = 0;
@@ -80,7 +91,6 @@ onMounted(() => {
     measure();
     window.addEventListener('popstate', onPop);
     window.addEventListener('keydown', onKey);
-    window.addEventListener('scroll', measure, { passive: true });
     window.addEventListener('resize', measure);
     last = performance.now();
     raf = requestAnimationFrame(loop);
@@ -88,9 +98,10 @@ onMounted(() => {
 onBeforeUnmount(() => {
     window.removeEventListener('popstate', onPop);
     window.removeEventListener('keydown', onKey);
-    window.removeEventListener('scroll', measure);
     window.removeEventListener('resize', measure);
     cancelAnimationFrame(raf);
+    barRo?.disconnect();
+    document.documentElement.style.removeProperty('--proto-bar-h');
 });
 
 const info = computed(() => meta[active.value] || { name: active.value, tests: '' });
@@ -100,7 +111,7 @@ const short = (k: string) => meta[k]?.name || k;
 <template>
     <div>
         <p v-if="!keys.length" class="proto-empty">
-            No variant files yet. Add files in src/prototypes/hero/variants/ named v1-*.vue, v2-*.vue, v3-*.vue.
+            No variant files yet. Add files in src/prototypes/build-system/variants/ named v1-*.vue.
         </p>
         <Suspense v-else>
             <component :is="comp" :key="active" />
@@ -111,7 +122,7 @@ const short = (k: string) => meta[k]?.name || k;
 
         <button v-if="hidden" class="proto-show" type="button" @click="hidden = false">PROTOTYPE · show (H)</button>
 
-        <div v-else class="proto-bar" role="region" aria-label="Prototype controls">
+        <div v-else ref="barEl" class="proto-bar" role="region" aria-label="Prototype controls">
             <div class="proto-row">
                 <strong class="proto-tag">PROTOTYPE</strong>
                 <button type="button" class="proto-btn" aria-label="Previous variant" @click="step(-1)">&larr;</button>
@@ -129,7 +140,7 @@ const short = (k: string) => meta[k]?.name || k;
                 <button type="button" class="proto-btn" aria-label="Hide bar" @click="hidden = true">Hide</button>
             </div>
             <p class="proto-state">
-                <b>{{ active || '-' }}</b> {{ info.name }} · {{ vw }}x{{ vh }} · scroll {{ progress }}% · {{ fps }} fps
+                <b>{{ active || '-' }}</b> {{ info.name }} · {{ vw }}x{{ vh }} · {{ fps }} fps
             </p>
             <p v-if="info.tests" class="proto-tests">{{ info.tests }}</p>
         </div>

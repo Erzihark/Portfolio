@@ -1,0 +1,11 @@
+---
+// THROWAWAY PROTOTYPE. Delete after the review.
+// Question: "Which way to show the chosen modules makes the 'Arma tu sistema' section clearest: one connected system or four separate builds?"
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PrototypeShell from '@/prototypes/build-system/PrototypeShell.vue';
+---
+
+<BaseLayout title="PROTOTYPE · Arma tu sistema" description="Prototipo desechable de la sección Arma tu sistema." locale="es">
+    <meta slot="head" name="robots" content="noindex, nofollow" />
+    <PrototypeShell client:only="vue" />
+</BaseLayout>
