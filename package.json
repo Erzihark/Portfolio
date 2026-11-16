@@ -8,6 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "prototype": "astro dev --open /Portfolio/prototype/hero/",
+    "prototype:crocky-hero": "astro dev --open /Portfolio/prototype/hero-crocky/",
     "deploy": "astro build && gh-pages -d dist"
   },
   "dependencies": {
