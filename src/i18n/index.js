@@ -1,5 +1,11 @@
 import { ref } from 'vue';
 import messages from './messages';
+import siteMessages from './site-messages';
+
+messages.en.site = siteMessages.en;
+messages.es.site = siteMessages.es;
+messages.en.world = { back: 'Back to the main site' };
+messages.es.world = { back: 'Volver al sitio principal' };
 
 export const SUPPORTED_LOCALES = ['en', 'es'];
 
