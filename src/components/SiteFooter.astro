@@ -1,0 +1,124 @@
+---
+import { localePath, useTranslations, type Locale } from '@/i18n';
+
+interface Props {
+    locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale).footer;
+const langs = [
+    { code: 'es' as const, label: 'ES' },
+    { code: 'en' as const, label: 'EN' }
+];
+const social = [
+    {
+        label: t.linkedin,
+        href: 'https://www.linkedin.com/in/manuel-sanchez-a-carretero-2b43801bb/'
+    },
+    { label: t.github, href: 'https://github.com/Erzihark' }
+];
+---
+
+<footer class="footer">
+    <div class="container bar">
+        <div class="who">
+            <p class="name">Manuel Carretero</p>
+            <p class="role">{t.role}</p>
+            <p class="tagline">{t.tagline}</p>
+        </div>
+        <ul class="links">
+            {
+                social.map((s) => (
+                    <li>
+                        <a
+                            href={s.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`${s.label} ${t.newTab}`}
+                        >
+                            {s.label}
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+        <ul class="lang" aria-label={t.language}>
+            {
+                langs.map((l) => (
+                    <li>
+                        <a
+                            href={localePath(l.code)}
+                            hreflang={l.code}
+                            lang={l.code}
+                            aria-current={l.code === locale ? 'true' : undefined}
+                        >
+                            {l.label}
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
+    <p class="container copy tag">© {new Date().getFullYear()} {t.rights}</p>
+</footer>
+
+<style>
+    .footer {
+        padding-block: var(--space-12) 11rem;
+        border-top: 1px solid var(--color-border);
+        background: var(--color-surface);
+    }
+    .bar {
+        display: grid;
+        gap: var(--space-6);
+        align-items: start;
+    }
+    .name {
+        font-family: var(--font-heading);
+        font-size: var(--text-lg);
+        font-weight: 700;
+    }
+    .role,
+    .tagline {
+        color: var(--color-text-muted);
+        font-size: var(--text-sm);
+    }
+    .links,
+    .lang {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+    }
+    .links a,
+    .lang a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2.75rem;
+        min-height: 2.75rem;
+        padding-inline: var(--space-3);
+        border: 1px solid var(--color-border);
+        color: var(--color-text-muted);
+        font-size: var(--text-sm);
+        text-decoration: none;
+        transition:
+            color var(--dur-fast) var(--ease-out),
+            border-color var(--dur-fast) var(--ease-out);
+    }
+    .links a:hover,
+    .lang a:hover,
+    .lang a[aria-current='true'] {
+        border-color: var(--color-accent);
+        color: var(--color-text);
+    }
+    .copy {
+        margin-top: var(--space-8);
+    }
+    @media (min-width: 48rem) {
+        .bar {
+            grid-template-columns: 1fr auto auto;
+            gap: var(--space-8);
+        }
+    }
+</style>

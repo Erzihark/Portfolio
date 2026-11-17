@@ -1,0 +1,134 @@
+---
+import { useTranslations, type Locale } from '@/i18n';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+    locale: Locale;
+}
+
+const t = useTranslations(Astro.props.locale).services;
+const sec = useTranslations(Astro.props.locale).crocky.sections;
+---
+
+<section
+    id="servicios"
+    class="section"
+    aria-labelledby="servicios-title"
+    data-section="servicios"
+    data-crocky-line={sec.servicios}
+>
+    <div class="container">
+        <SectionHead id="servicios-title" tag={t.tag} title={t.title} sub={t.sub} />
+        <ul class="grid">
+            {
+                t.items.map((item, i) => (
+                    <li data-reveal>
+                        <article class="card hud" data-crocky={item.say} tabindex="0">
+                            <p class="tag">SRV · 0{i + 1}</p>
+                            <h3>{item.title}</h3>
+                            <dl>
+                                <div>
+                                    <dt class="tag">{t.painLabel}</dt>
+                                    <dd>{item.pain}</dd>
+                                </div>
+                                <div>
+                                    <dt class="tag">{t.doLabel}</dt>
+                                    <dd>{item.does}</dd>
+                                </div>
+                                <div class="proof">
+                                    <dt class="tag">{t.proofLabel}</dt>
+                                    <dd>{item.proof}</dd>
+                                </div>
+                            </dl>
+                        </article>
+                    </li>
+                ))
+            }
+        </ul>
+        <aside class="note" data-crocky={t.noteSay} data-reveal>
+            <p class="tag">{t.noteTag}</p>
+            <p class="note-title">{t.noteTitle}</p>
+            <p class="note-text">{t.noteText}</p>
+        </aside>
+    </div>
+</section>
+
+<style>
+    .grid {
+        display: grid;
+        gap: var(--space-4);
+        grid-auto-rows: 1fr;
+    }
+    .grid > li {
+        display: flex;
+    }
+    .card {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+        width: 100%;
+        padding: var(--space-6);
+        background: var(--color-surface);
+        transition: border-color var(--dur-fast) var(--ease-out);
+    }
+    .card:hover,
+    .card:focus-visible {
+        border-color: var(--color-accent);
+    }
+    h3 {
+        font-size: var(--text-lg);
+        line-height: 1.15;
+    }
+    dl {
+        display: grid;
+        flex: 1;
+        gap: var(--space-4);
+        align-content: start;
+    }
+    dt {
+        margin-bottom: var(--space-1);
+    }
+    dd {
+        margin: 0;
+        font-size: var(--text-sm);
+        line-height: 1.55;
+    }
+    .proof {
+        align-self: end;
+        padding-top: var(--space-3);
+        border-top: 1px solid var(--color-border);
+    }
+    .proof dd {
+        color: var(--color-accent);
+    }
+    .note {
+        display: grid;
+        gap: var(--space-1);
+        max-width: 44rem;
+        margin-top: var(--space-6);
+        padding: var(--space-3) var(--space-4);
+        border-left: 2px solid var(--color-accent-2);
+        color: var(--color-text-muted);
+    }
+    .note .tag {
+        color: var(--color-accent-2);
+    }
+    .note-title {
+        color: var(--color-text);
+        font-family: var(--font-heading);
+        font-weight: 600;
+    }
+    .note-text {
+        font-size: var(--text-sm);
+    }
+    @media (min-width: 40rem) {
+        .grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+    @media (min-width: 75rem) {
+        .grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+    }
+</style>

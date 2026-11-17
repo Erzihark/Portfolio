@@ -1,0 +1,81 @@
+---
+import { useTranslations, type Locale } from '@/i18n';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+    locale: Locale;
+}
+
+const t = useTranslations(Astro.props.locale);
+const p = t.process;
+---
+
+<section
+    id="como-trabajo"
+    class="section"
+    aria-labelledby="process-title"
+    data-section="como-trabajo"
+    data-crocky-line={t.crocky.sections['como-trabajo']}
+>
+    <div class="container">
+        <SectionHead id="process-title" tag={p.tag} title={p.title} sub={p.sub} />
+        <ol class="steps">
+            {
+                p.steps.map((s, i) => (
+                    <li class="step" data-crocky={t.crocky.stepSay} data-reveal>
+                        <p class="num">0{i + 1}</p>
+                        <h3>{s.title}</h3>
+                        <p class="desc">{s.text}</p>
+                    </li>
+                ))
+            }
+        </ol>
+        <p class="note" data-reveal>{p.note}</p>
+    </div>
+</section>
+
+<style>
+    .steps {
+        display: grid;
+        gap: var(--space-4);
+    }
+    .step {
+        display: grid;
+        gap: var(--space-2);
+        align-content: start;
+        padding: var(--space-4) 0 0;
+        border-top: 1px solid var(--color-border);
+    }
+    .num {
+        color: var(--color-accent);
+        font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
+        font-size: var(--text-sm);
+        letter-spacing: 0.14em;
+    }
+    h3 {
+        font-size: var(--text-xl);
+        line-height: 1.15;
+    }
+    .desc {
+        color: var(--color-text-muted);
+        font-size: var(--text-sm);
+    }
+    .note {
+        max-width: 44rem;
+        margin-top: var(--space-8);
+        padding: var(--space-3) var(--space-4);
+        border-left: 2px solid var(--color-accent);
+        color: var(--color-text-muted);
+    }
+    @media (min-width: 40rem) {
+        .steps {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: var(--space-8) var(--space-6);
+        }
+    }
+    @media (min-width: 64rem) {
+        .steps {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+    }
+</style>

@@ -1,0 +1,83 @@
+---
+import { Image } from 'astro:assets';
+import profile from '@/assets/profile.jpg';
+import { useTranslations, type Locale } from '@/i18n';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+    locale: Locale;
+}
+
+const t = useTranslations(Astro.props.locale);
+const a = t.about;
+---
+
+<section
+    id="sobre-mi"
+    class="section"
+    aria-labelledby="about-title"
+    data-section="sobre-mi"
+    data-crocky-line={t.crocky.sections['sobre-mi']}
+>
+    <div class="container">
+        <div class="layout">
+            <div class="photo hud" data-reveal>
+                <Image
+                    src={profile}
+                    alt={a.photoAlt}
+                    width={480}
+                    widths={[240, 360, 480]}
+                    sizes="(min-width: 48rem) 20rem, 14rem"
+                    loading="lazy"
+                    decoding="async"
+                />
+            </div>
+            <div class="text">
+                <SectionHead id="about-title" tag={a.tag} title={a.title} />
+                <div class="copy" data-reveal>
+                    {a.paragraphs.map((p) => <p>{p}</p>)}
+                    <p>{a.languages}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .layout {
+        display: grid;
+        gap: var(--space-8);
+        align-items: start;
+    }
+    .photo {
+        width: min(100%, 14rem);
+        padding: var(--space-2);
+    }
+    .photo :global(img) {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1;
+        object-fit: cover;
+    }
+    .text :global(.head) {
+        margin-bottom: var(--space-6);
+    }
+    .copy {
+        display: grid;
+        gap: var(--space-4);
+        max-width: 38rem;
+        font-size: var(--text-lg);
+    }
+    .copy p:not(:first-child) {
+        color: var(--color-text-muted);
+    }
+    @media (min-width: 48rem) {
+        .layout {
+            grid-template-columns: 20rem minmax(0, 1fr);
+            gap: var(--space-12);
+        }
+        .photo {
+            width: 100%;
+        }
+    }
+</style>

@@ -1,0 +1,62 @@
+---
+import { useTranslations, type Locale } from '@/i18n';
+import SectionHead from './SectionHead.astro';
+import ContactForm from './ContactForm.vue';
+
+interface Props {
+    locale: Locale;
+}
+
+const t = useTranslations(Astro.props.locale);
+const c = t.contact;
+const labels: Record<string, string> = Object.fromEntries(
+    t.build.lines.flatMap((l) => l.chips.map((chip) => [chip.id, chip.label]))
+);
+---
+
+<section
+    id="contacto"
+    class="section"
+    aria-labelledby="contact-title"
+    data-section="contacto"
+    data-crocky-line={t.crocky.sections.contacto}
+>
+    <div class="container layout">
+        <div class="intro">
+            <SectionHead id="contact-title" tag={c.tag} title={c.title} sub={c.sub} />
+            <p class="mail">
+                {c.emailLabel}
+                <a href={`mailto:${c.email}`}>{c.email}</a>
+            </p>
+        </div>
+        <ContactForm client:visible t={c} labels={labels} />
+    </div>
+</section>
+
+<style>
+    .layout {
+        display: grid;
+        gap: var(--space-8);
+        align-items: start;
+    }
+    .intro :global(.head) {
+        margin-bottom: var(--space-6);
+    }
+    .mail {
+        color: var(--color-text-muted);
+        overflow-wrap: anywhere;
+    }
+    .mail a {
+        display: inline-block;
+        padding-block: var(--space-2);
+        color: var(--color-accent);
+        font-family: var(--font-heading);
+        font-weight: 600;
+    }
+    @media (min-width: 60rem) {
+        .layout {
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+            gap: var(--space-16);
+        }
+    }
+</style>

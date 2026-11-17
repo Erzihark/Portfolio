@@ -1,7 +1,15 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import SiteHeader from '@/components/SiteHeader.astro';
+import SiteFooter from '@/components/SiteFooter.astro';
 import Hero from '@/components/Hero.astro';
+import Services from '@/components/Services.astro';
+import BuildSystemSection from '@/components/BuildSystemSection.astro';
+import Proof from '@/components/Proof.astro';
+import Process from '@/components/Process.astro';
+import About from '@/components/About.astro';
+import Contact from '@/components/Contact.astro';
+import CrockyCorner from '@/components/CrockyCorner.vue';
 import { useTranslations, type Locale } from '@/i18n';
 
 interface Props {
@@ -15,4 +23,18 @@ const t = useTranslations(locale);
 <BaseLayout title={t.meta.title} description={t.meta.description} locale={locale}>
     <SiteHeader slot="header" locale={locale} />
     <Hero locale={locale} />
+    <Services locale={locale} />
+    <BuildSystemSection locale={locale} />
+    <Proof locale={locale} />
+    <Process locale={locale} />
+    <About locale={locale} />
+    <Contact locale={locale} />
+    <Fragment slot="footer">
+        <SiteFooter locale={locale} />
+        <CrockyCorner client:idle t={t.crocky} />
+    </Fragment>
 </BaseLayout>
+
+<script>
+    import '../lib/motion';
+</script>

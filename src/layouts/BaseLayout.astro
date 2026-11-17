@@ -20,14 +20,44 @@ const urlEn = new URL(localePath('en'), site).href;
 const ogLocale = locale === 'es' ? 'es_MX' : 'en_US';
 const ogAlternate = locale === 'es' ? 'en_US' : 'es_MX';
 
+const personId = new URL('#manuel', canonical).href;
 const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'ProfessionalService',
-    name: 'Manuel Carretero',
-    description,
-    url: canonical,
-    areaServed: { '@type': 'Country', name: 'Mexico' },
-    availableLanguage: ['es', 'en']
+    '@graph': [
+        {
+            '@type': 'Person',
+            '@id': personId,
+            name: 'Manuel Carretero',
+            jobTitle: t.footer.role,
+            url: canonical,
+            email: t.contact.email,
+            knowsLanguage: ['es', 'en'],
+            sameAs: [
+                'https://www.linkedin.com/in/manuel-sanchez-a-carretero-2b43801bb/',
+                'https://github.com/Erzihark'
+            ]
+        },
+        {
+            '@type': 'ProfessionalService',
+            name: 'Manuel Carretero',
+            description,
+            url: canonical,
+            founder: { '@id': personId },
+            areaServed: [
+                { '@type': 'Country', name: 'Mexico' },
+                { '@type': 'Country', name: 'United States' }
+            ],
+            availableLanguage: ['es', 'en'],
+            hasOfferCatalog: {
+                '@type': 'OfferCatalog',
+                name: t.services.title,
+                itemListElement: t.services.items.map((item) => ({
+                    '@type': 'Offer',
+                    itemOffered: { '@type': 'Service', name: item.title, description: item.does }
+                }))
+            }
+        }
+    ]
 };
 ---
 

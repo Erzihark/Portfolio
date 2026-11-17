@@ -1,0 +1,111 @@
+---
+import { useTranslations, type Locale } from '@/i18n';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+    locale: Locale;
+}
+
+const t = useTranslations(Astro.props.locale);
+const p = t.proof;
+---
+
+<section
+    id="resultados"
+    class="section"
+    aria-labelledby="proof-title"
+    data-section="resultados"
+    data-crocky-line={t.crocky.sections.resultados}
+>
+    <div class="container">
+        <SectionHead id="proof-title" tag={p.tag} title={p.title} sub={p.sub} />
+        <ul class="grid">
+            {
+                p.items.map((item, i) => (
+                    <li data-reveal>
+                        <article class="card hud" data-crocky={t.crocky.proofSay} tabindex="0">
+                            <p class="tag">0{i + 1} / 03</p>
+                            <p class="org">{item.org}</p>
+                            <p class="kind">{item.kind}</p>
+                            <h3>{item.headline}</h3>
+                            <p class="text">{item.text}</p>
+                            <ul class="facts">
+                                {item.facts.map((f) => (
+                                    <li>{f}</li>
+                                ))}
+                            </ul>
+                        </article>
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
+</section>
+
+<style>
+    .grid {
+        display: grid;
+        gap: var(--space-4);
+        grid-auto-rows: 1fr;
+    }
+    .grid > li {
+        display: flex;
+    }
+    .card {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        width: 100%;
+        padding: var(--space-6);
+        background: var(--color-surface);
+        transition: border-color var(--dur-fast) var(--ease-out);
+    }
+    .card:hover,
+    .card:focus-visible {
+        border-color: var(--color-accent);
+    }
+    .org {
+        font-family: var(--font-heading);
+        font-size: var(--text-lg);
+        font-weight: 700;
+    }
+    .kind {
+        color: var(--color-text-muted);
+        font-size: var(--text-sm);
+    }
+    h3 {
+        margin-top: var(--space-3);
+        color: var(--color-accent);
+        font-size: var(--text-lg);
+        line-height: 1.15;
+    }
+    .text {
+        font-size: var(--text-sm);
+    }
+    .facts {
+        display: grid;
+        gap: var(--space-2);
+        margin-top: auto;
+        padding-top: var(--space-4);
+        color: var(--color-text-muted);
+        font-size: var(--text-sm);
+    }
+    .facts li {
+        position: relative;
+        padding-left: var(--space-4);
+    }
+    .facts li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0.7em;
+        width: 6px;
+        height: 1px;
+        background: var(--color-accent);
+    }
+    @media (min-width: 64rem) {
+        .grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+</style>
