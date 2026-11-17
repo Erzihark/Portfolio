@@ -49,14 +49,14 @@ const en: typeof es = {
         title: 'Internal systems and automation',
         pain: 'Your team spends the day between Excel, WhatsApp and paper, and orders or tasks get lost along the way.',
         does: 'I bring everything into one system made for you, and I automate the tasks that are done by hand today.',
-        proof: 'At an education organization, one platform replaced four separate tools.',
+        proof: 'For an industrial staffing agency, the system ranks available workers by experience and distance for every request.',
         say: 'Does your team live in spreadsheets? We put it in order.'
       },
       {
         title: 'New apps and products',
         pain: 'You have an idea, or you want customers to buy and book from their phone, and you do not know where to start.',
         does: 'I help you define a simple first version and I build it for iOS, Android and the web.',
-        proof: 'I have built software that moves real money: statements, payments and connections with other systems.',
+        proof: 'For an education organization, I built one app with a single codebase for iOS, Android and web.',
         say: 'Got an idea? Let us start with the simplest part.'
       },
       {
@@ -204,8 +204,22 @@ const en: typeof es = {
   proof: {
     tag: 'RESULTS',
     title: 'What I have already built',
-    sub: 'More than 5 years building software for companies in the US and Mexico. Three examples, told by what they changed for the business.',
+    sub: 'More than 5 years building software for companies in the US and Mexico. Four examples, told by what they changed for the business.',
+    prev: 'Previous',
+    next: 'Next',
+    slideOf: 'of',
     items: [
+      {
+        kind: 'Client · Industrial staffing agency in the US',
+        org: 'JBC Manpower',
+        headline: 'The right worker for every request',
+        text: 'When a company asks for staff, the system ranks the available workers by experience, distance and fit for the job. The team finds the right person faster.',
+        facts: [
+          'Admin panel the recruiting team uses every day',
+          'Worker ranking with maps: experience, distance and profile',
+          'Website and online sign-up for job seekers'
+        ]
+      },
       {
         kind: 'Client · Education platform',
         org: 'WRSI',

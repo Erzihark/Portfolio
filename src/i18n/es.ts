@@ -48,28 +48,32 @@ export default {
         title: 'Sistemas internos y automatización',
         pain: 'Tu equipo pasa el día entre Excel, WhatsApp y papeles, y los pedidos o pendientes se pierden en el camino.',
         does: 'Reúno todo en un solo sistema hecho a tu medida y automatizo las tareas que hoy se repiten a mano.',
-        proof: 'En una organización educativa, una sola plataforma reemplazó cuatro herramientas sueltas.',
+        proof:
+          'En una agencia de personal industrial, el sistema ordena a los trabajadores disponibles por experiencia y distancia en cada solicitud.',
         say: '¿Tu equipo vive en hojas de cálculo? Lo ordenamos.'
       },
       {
         title: 'Apps y productos nuevos',
         pain: 'Tienes una idea, o quieres que tus clientes compren y reserven desde el celular, y no sabes por dónde empezar.',
         does: 'Te ayudo a definir una primera versión sencilla y la construyo para iOS, Android y web.',
-        proof: 'He construido software que mueve dinero real: estados de cuenta, pagos y conexiones con otros sistemas.',
+        proof:
+          'Para una organización educativa construí una app con una sola base de código para iOS, Android y web.',
         say: '¿Tienes una idea? Empecemos por lo más simple.'
       },
       {
         title: 'Mejorar software existente',
         pain: 'Tu sistema o tu página es lento, ya está viejo y cada cambio pequeño tarda semanas.',
         does: 'Encuentro dónde se atora, lo acelero y lo actualizo por partes, sin detener tu operación.',
-        proof: 'En una empresa de publicidad digital, las páginas pasaron de cargar en unos 3 segundos a unos 0.7.',
+        proof:
+          'En una empresa de publicidad digital, las páginas pasaron de cargar en unos 3 segundos a unos 0.7.',
         say: '¿Tu sistema va lento? Lo afinamos.'
       },
       {
         title: 'Experiencias interactivas',
         pain: 'Quieres que tu marca destaque y que la gente no solo mire, sino que toque, juegue y recuerde.',
         does: 'Creo contenido interactivo en 2D, 3D y realidad aumentada, y mido cómo lo usa cada visitante.',
-        proof: 'Anuncios interactivos con 2D, 3D, realidad aumentada y física, con seguimiento en tiempo real.',
+        proof:
+          'Anuncios interactivos con 2D, 3D, realidad aumentada y física, con seguimiento en tiempo real.',
         say: '¿Quieres que tu marca se pueda tocar? Lo hacemos 3D.'
       }
     ],
@@ -110,7 +114,8 @@ export default {
             id: 'ops2',
             label: 'Se me pierden pedidos, citas o pendientes',
             say: 'Que nada se te pase: te aviso a tiempo.',
-            benefit: 'Cada pedido, cita o pendiente a la vista, con avisos para que nada se quede olvidado.'
+            benefit:
+              'Cada pedido, cita o pendiente a la vista, con avisos para que nada se quede olvidado.'
           },
           {
             id: 'ops3',
@@ -136,7 +141,8 @@ export default {
             id: 'app1',
             label: 'Tengo una idea y no sé por dónde empezar',
             say: '¡Una idea! Empecemos por lo más sencillo.',
-            benefit: 'Una primera versión sencilla para probar tu idea con personas reales, sin gastar de más.'
+            benefit:
+              'Una primera versión sencilla para probar tu idea con personas reales, sin gastar de más.'
           },
           {
             id: 'app2',
@@ -188,7 +194,8 @@ export default {
             id: 'exp1',
             label: 'Quiero que mi marca destaque en internet',
             say: '¡Que te vean y se acuerden de ti!',
-            benefit: 'Una experiencia en internet que hace que tu marca se vea distinta y se recuerde.'
+            benefit:
+              'Una experiencia en internet que hace que tu marca se vea distinta y se recuerde.'
           },
           {
             id: 'exp2',
@@ -203,8 +210,22 @@ export default {
   proof: {
     tag: 'RESULTADOS',
     title: 'Lo que ya he construido',
-    sub: 'Más de 5 años haciendo software para empresas de EE. UU. y México. Tres ejemplos, contados por lo que le cambiaron al negocio.',
+    sub: 'Más de 5 años haciendo software para empresas de EE. UU. y México. Cuatro ejemplos, contados por lo que le cambiaron al negocio.',
+    prev: 'Anterior',
+    next: 'Siguiente',
+    slideOf: 'de',
     items: [
+      {
+        kind: 'Cliente · Agencia de personal industrial en EE. UU.',
+        org: 'JBC Manpower',
+        headline: 'El trabajador indicado para cada solicitud',
+        text: 'Cuando una empresa pide personal, el sistema ordena a los trabajadores disponibles por experiencia, distancia y qué tan bien encajan con el puesto. El equipo encuentra más rápido a la persona indicada.',
+        facts: [
+          'Panel de administración que el equipo de reclutamiento usa todos los días',
+          'Ranking de trabajadores con mapas: experiencia, distancia y perfil',
+          'Sitio web y registro en línea para quienes buscan trabajo'
+        ]
+      },
       {
         kind: 'Cliente · Plataforma educativa',
         org: 'WRSI',

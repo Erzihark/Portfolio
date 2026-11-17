@@ -90,6 +90,72 @@ const jsonLd = {
         <link rel="apple-touch-icon" sizes="180x180" href={`${base}apple-touch-icon.png`} />
         <link rel="manifest" href={`${base}site.webmanifest`} />
         <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+        <script is:inline define:vars={{ homeEs: localePath('es'), homeEn: localePath('en') }}>
+            // First visit: choose the language from the timezone. A manual choice always wins.
+            (function () {
+                var KEY = 'lang';
+                function save(v) {
+                    try {
+                        localStorage.setItem(KEY, v);
+                    } catch (e) {}
+                }
+                function load() {
+                    try {
+                        return localStorage.getItem(KEY);
+                    } catch (e) {
+                        return null;
+                    }
+                }
+
+                // Save the language when the visitor clicks a language link
+                document.addEventListener('click', function (e) {
+                    var a = e.target.closest && e.target.closest('a[hreflang]');
+                    var l = a && a.getAttribute('hreflang');
+                    if (l === 'es' || l === 'en') save(l);
+                });
+
+                // Spanish zones: Mexico, Spain, Spanish-speaking South America
+                var ES_PREFIX = ['America/Argentina/'];
+                var ES_ZONES = [
+                    // Mexico
+                    'America/Mexico_City', 'America/Cancun', 'America/Merida', 'America/Monterrey',
+                    'America/Chihuahua', 'America/Ciudad_Juarez', 'America/Ojinaga', 'America/Hermosillo',
+                    'America/Mazatlan', 'America/Tijuana', 'America/Bahia_Banderas', 'America/Matamoros',
+                    // Spain
+                    'Europe/Madrid', 'Africa/Ceuta', 'Atlantic/Canary',
+                    // South America
+                    'America/Bogota', 'America/Caracas', 'America/Lima', 'America/Santiago',
+                    'America/Punta_Arenas', 'America/La_Paz', 'America/Guayaquil', 'Pacific/Galapagos',
+                    'America/Asuncion', 'America/Montevideo', 'America/Buenos_Aires', 'America/Cordoba',
+                    'America/Mendoza', 'America/Catamarca', 'America/Jujuy', 'America/Rosario'
+                ];
+
+                function detect() {
+                    var tz = '';
+                    try {
+                        tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+                    } catch (e) {}
+                    if (tz) {
+                        var hit =
+                            ES_ZONES.indexOf(tz) !== -1 ||
+                            ES_PREFIX.some(function (p) {
+                                return tz.indexOf(p) === 0;
+                            });
+                        return hit ? 'es' : 'en';
+                    }
+                    // No timezone: use the browser language
+                    var lang = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+                    return /^es/i.test(lang) ? 'es' : 'en';
+                }
+
+                // Redirect only from the Spanish home page, and never for crawlers
+                if (location.pathname !== homeEs) return;
+                if (/bot|crawl|spider|slurp|lighthouse/i.test(navigator.userAgent)) return;
+                var saved = load();
+                var lang = saved === 'es' || saved === 'en' ? saved : detect();
+                if (lang === 'en') location.replace(homeEn + location.search + location.hash);
+            })();
+        </script>
         <slot name="head" />
     </head>
     <body>
