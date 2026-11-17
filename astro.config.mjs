@@ -17,6 +17,8 @@ const dropPrototypes = {
 export default defineConfig({
     site: 'https://manuelcarretero.dev',
     trailingSlash: 'always',
+    // GitHub Pages (Jekyll) hides folders that start with "_".
+    build: { assets: 'assets' },
     integrations: [
         vue(),
         sitemap({

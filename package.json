@@ -9,7 +9,7 @@
     "preview": "astro preview",
     "prototype": "astro dev --open /prototype/hero-crocky/",
     "prototype:build": "astro dev --open /prototype/build-system/",
-    "deploy": "astro build && gh-pages -d dist"
+    "deploy": "astro build && gh-pages -t -d dist"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.5",

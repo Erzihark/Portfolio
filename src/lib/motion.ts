@@ -27,7 +27,7 @@ function watchSections() {
 
 // Smooth scroll with Lenis. Anchor links keep an offset for the fixed header.
 async function smoothScroll() {
-    const [{ default: Lenis }] = await Promise.all([import('lenis'), import('lenis/dist/lenis.css')]);
+    const { default: Lenis } = await import('lenis');
     const lenis = new Lenis({ anchors: { offset: -72 } });
     const loop = (time: number) => {
         lenis.raf(time);
