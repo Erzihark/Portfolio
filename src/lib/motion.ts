@@ -38,12 +38,24 @@ async function smoothScroll() {
 
 // Fade in blocks below the fold when they enter the viewport.
 async function reveal() {
-    const { gsap } = await import('gsap');
+    const root = document.documentElement;
+    let gsap: typeof import('gsap').gsap;
+    try {
+        ({ gsap } = await import('gsap'));
+    } catch {
+        root.classList.remove('reveal-pending');
+        return;
+    }
     const items = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]')).filter(
         (el) => el.getBoundingClientRect().top > window.innerHeight * 0.92
     );
-    if (!items.length) return;
+    if (!items.length) {
+        root.classList.remove('reveal-pending');
+        return;
+    }
     gsap.set(items, { opacity: 0, y: 24 });
+    // The inline styles now hide the items, so the CSS guard can go.
+    root.classList.remove('reveal-pending');
     const io = new IntersectionObserver(
         (entries) => {
             for (const e of entries) {

@@ -90,6 +90,18 @@ const jsonLd = {
         <link rel="apple-touch-icon" sizes="180x180" href={`${base}apple-touch-icon.png`} />
         <link rel="manifest" href={`${base}site.webmanifest`} />
         <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+        <script is:inline>
+            // Hide reveal blocks until the motion script is ready. This stops a flash on load.
+            // motion.ts removes the class. The timer removes it if that script fails.
+            (function () {
+                if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                var root = document.documentElement;
+                root.classList.add('reveal-pending');
+                setTimeout(function () {
+                    root.classList.remove('reveal-pending');
+                }, 4000);
+            })();
+        </script>
         <script is:inline define:vars={{ homeEs: localePath('es'), homeEn: localePath('en') }}>
             // First visit: choose the language from the timezone. A manual choice always wins.
             (function () {

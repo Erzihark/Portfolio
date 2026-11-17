@@ -13,6 +13,7 @@ const props = defineProps<{
     items: { title: string; say: string }[];
     ariaLabel: string;
     fallback: string;
+    loading: string;
     stepsLabel: string;
     stageSay: string;
 }>();
@@ -88,7 +89,11 @@ onBeforeUnmount(() => {
         @pointerleave="paused = false"
     >
         <div ref="host" class="hero-stage__canvas" role="img" :aria-label="ariaLabel"></div>
-        <StageFallback v-if="!ready" :text="failed ? fallback : undefined" />
+        <StageFallback
+            v-if="!ready"
+            :text="failed ? fallback : undefined"
+            :loading="failed ? undefined : loading"
+        />
     </div>
     <div
         ref="dock"

@@ -187,7 +187,11 @@ onBeforeUnmount(() => {
         <div class="stage" role="img" :aria-label="t.stageAria">
             <div ref="host" class="stage__canvas"></div>
             <span ref="marker" class="aim" aria-hidden="true"></span>
-            <StageFallback v-if="!ready" :text="failed ? t.stageFallback : undefined" />
+            <StageFallback
+            v-if="!ready"
+            :text="failed ? t.stageFallback : undefined"
+            :loading="failed ? undefined : t.stageLoading"
+        />
             <div class="labels" :class="{ 'labels--abs': positioned }" aria-hidden="true">
                 <span
                     v-for="(l, i) in t.lines"

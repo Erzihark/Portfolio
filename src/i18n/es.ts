@@ -21,7 +21,7 @@ export default {
   hero: {
     eyebrow: 'Consultor y desarrollador independiente',
     title: 'Tecnología a la medida de tu negocio, no al revés.',
-    text: 'Tú me cuentas el problema. Yo encuentro la solución correcta y la construyo: a veces es automatizar, a veces conectar lo que ya usas, a veces una app nueva.',
+    text: 'Tú me cuentas el problema. Yo encuentro la solución correcta y la construyo: a veces es automatizar, a veces integrar lo que ya usas, a veces una app nueva.',
     primary: 'Cuéntame qué necesitas',
     secondary: 'Ver cómo trabajo',
     points: [
@@ -31,6 +31,7 @@ export default {
     ],
     stageAria: 'Vista 3D de cuatro cosas que puedo construir, una por cada tipo de servicio',
     stageFallback: '3D no disponible',
+    stageLoading: 'Cargando 3D…',
     stepsLabel: 'Tipos de servicio',
     ctaSay1: 'Escríbeme qué te estorba. Lo hablamos sin tecnicismos.',
     ctaSay2: 'Aquí te cuento cómo trabajo, paso a paso.',
@@ -89,6 +90,7 @@ export default {
     sub: 'Marca lo que te pasa en tu negocio y mira cómo podríamos resolverlo.',
     stageAria: 'Vista 3D de lo que podríamos construir, una parte por cada área',
     stageFallback: '3D no disponible',
+    stageLoading: 'Cargando 3D…',
     counterNone: 'Sin selección',
     counter: '{n} de 4 áreas en marcha',
     clear: 'Quitar todo',
@@ -264,7 +266,7 @@ export default {
     steps: [
       {
         title: 'Entender la necesidad',
-        text: 'Platicamos de tu negocio y de lo que te estorba. Sin tecnicismos: yo hago las preguntas.'
+        text: 'Platicamos de tu negocio y de tu problema.'
       },
       {
         title: 'Proponer una solución',
@@ -279,7 +281,7 @@ export default {
         text: 'Después del lanzamiento sigo contigo: mantenimiento y mejoras conforme tu negocio crece.'
       }
     ],
-    note: 'Cada proyecto tiene un precio y un alcance definidos, y se paga en mensualidades. Después del lanzamiento, el mantenimiento continúa.'
+    note: 'Cada proyecto tiene un precio y un alcance definidos, y puede pagarse en mensualidades. Después del lanzamiento, el mantenimiento continúa.'
   },
   about: {
     tag: 'SOBRE MÍ',
@@ -289,14 +291,14 @@ export default {
       'Soy Manuel Carretero, consultor y desarrollador independiente.',
       'Trabajo solo: hablas directamente con la persona que construye lo que necesitas, sin intermediarios.',
       'Tengo más de 5 años de experiencia en empresas de EE. UU. y México, desde sistemas internos hasta apps y experiencias interactivas.',
-      'No soy diseñador gráfico. Lo que entrego son interfaces funcionales y fáciles de usar.'
+      'Lo que entrego son interfaces funcionales y fáciles de usar.'
     ],
     languages: 'Atiendo en español y en inglés.'
   },
   contact: {
     tag: 'CONTACTO',
     title: 'Cuéntame qué necesitas',
-    sub: 'Escríbeme con tus palabras, sin tecnicismos. Te respondo yo directamente.',
+    sub: 'Escríbeme con tus palabras. Te respondo yo directamente.',
     emailLabel: 'O escríbeme a',
     email: 'manuelalejandrosac@gmail.com',
     name: 'Nombre',
@@ -330,6 +332,7 @@ export default {
     hide: 'Ocultar a Crocky',
     show: 'Mostrar a Crocky',
     name: 'Crocky',
+    loading: 'Cargando a Crocky…',
     greeting: '¡Hola! Soy Crocky. ¿Qué te gustaría resolver?',
     petLines: ['¡Jeje, gracias!', '¡Eso me gusta!'],
     sections: {

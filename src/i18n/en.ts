@@ -5,7 +5,8 @@ const en: typeof es = {
     title: 'Manuel Carretero | Technology built around your business',
     description:
       'Independent consultant and developer. Internal systems, new apps, upgrades to your software and interactive experiences, built around your business.',
-    ogDescription: 'Technology built around your business, not the other way around. Tell me what you need.'
+    ogDescription:
+      'Technology built around your business, not the other way around. Tell me what you need.'
   },
   skip: 'Skip to content',
   nav: {
@@ -32,6 +33,7 @@ const en: typeof es = {
     ],
     stageAria: 'A 3D view of four things I can build, one for each type of service',
     stageFallback: '3D not available',
+    stageLoading: 'Loading 3D…',
     stepsLabel: 'Types of service',
     ctaSay1: 'Tell me what is in your way. We talk it through without jargon.',
     ctaSay2: 'Here I explain how I work, step by step.',
@@ -49,28 +51,32 @@ const en: typeof es = {
         title: 'Internal systems and automation',
         pain: 'Your team spends the day between Excel, WhatsApp and paper, and orders or tasks get lost along the way.',
         does: 'I bring everything into one system made for you, and I automate the tasks that are done by hand today.',
-        proof: 'For an industrial staffing agency, the system ranks available workers by experience and distance for every request.',
+        proof:
+          'For an industrial staffing agency, the system ranks available workers by experience and distance for every request.',
         say: 'Does your team live in spreadsheets? We put it in order.'
       },
       {
         title: 'New apps and products',
         pain: 'You have an idea, or you want customers to buy and book from their phone, and you do not know where to start.',
         does: 'I help you define a simple first version and I build it for iOS, Android and the web.',
-        proof: 'For an education organization, I built one app with a single codebase for iOS, Android and web.',
+        proof:
+          'For an education organization, I built one app with a single codebase for iOS, Android and web.',
         say: 'Got an idea? Let us start with the simplest part.'
       },
       {
         title: 'Improving existing software',
         pain: 'Your system or website is slow, it is getting old, and every small change takes weeks.',
         does: 'I find where it gets stuck, speed it up and update it piece by piece, without stopping your operation.',
-        proof: 'At a digital advertising company, pages went from loading in about 3 seconds to about 0.7.',
+        proof:
+          'At a digital advertising company, pages went from loading in about 3 seconds to about 0.7.',
         say: 'Is your system slow? We tune it.'
       },
       {
         title: 'Interactive experiences',
         pain: 'You want your brand to stand out, and you want people to touch, play and remember, not just look.',
         does: 'I create interactive content in 2D, 3D and augmented reality, and I measure how each visitor uses it.',
-        proof: 'Interactive ads with 2D, 3D, augmented reality and physics, with real-time tracking.',
+        proof:
+          'Interactive ads with 2D, 3D, augmented reality and physics, with real-time tracking.',
         say: 'Want your brand to be touchable? We make it 3D.'
       }
     ],
@@ -86,6 +92,7 @@ const en: typeof es = {
     sub: 'Mark what is happening in your business and see how we could solve it.',
     stageAria: 'A 3D view of what we could build, one part for each area',
     stageFallback: '3D not available',
+    stageLoading: 'Loading 3D…',
     counterNone: 'Nothing selected',
     counter: '{n} of 4 areas under way',
     clear: 'Clear all',
@@ -111,7 +118,8 @@ const en: typeof es = {
             id: 'ops2',
             label: 'I lose orders, appointments or tasks',
             say: 'Nothing slips by: I warn you in time.',
-            benefit: 'Every order, appointment and task in sight, with alerts so nothing is forgotten.'
+            benefit:
+              'Every order, appointment and task in sight, with alerts so nothing is forgotten.'
           },
           {
             id: 'ops3',
@@ -137,7 +145,8 @@ const en: typeof es = {
             id: 'app1',
             label: 'I have an idea and I do not know where to start',
             say: 'An idea! Let us start with the simplest part.',
-            benefit: 'A simple first version to test your idea with real people, without overspending.'
+            benefit:
+              'A simple first version to test your idea with real people, without overspending.'
           },
           {
             id: 'app2',
@@ -169,7 +178,8 @@ const en: typeof es = {
             id: 'soft2',
             label: 'My system is old and nobody dares to touch it',
             say: 'It gets renewed in parts, without throwing away what works.',
-            benefit: 'Your current system is renewed little by little, without stopping your business.'
+            benefit:
+              'Your current system is renewed little by little, without stopping your business.'
           },
           {
             id: 'soft3',
@@ -258,7 +268,7 @@ const en: typeof es = {
     steps: [
       {
         title: 'Understand the need',
-        text: 'We talk about your business and what gets in your way. No jargon: I ask the questions.'
+        text: 'We talk about your business and what gets in your way.'
       },
       {
         title: 'Propose a solution',
@@ -273,7 +283,7 @@ const en: typeof es = {
         text: 'After launch I stay with you: maintenance and improvements as your business grows.'
       }
     ],
-    note: 'Each project has a defined price and scope, paid in monthly installments. After launch, maintenance continues.'
+    note: 'Each project has a defined price and scope, can be paid in monthly installments. After launch, maintenance continues.'
   },
   about: {
     tag: 'ABOUT',
@@ -283,14 +293,14 @@ const en: typeof es = {
       'I am Manuel Carretero, an independent consultant and developer.',
       'I work alone: you talk directly to the person who builds what you need, with no middlemen.',
       'I have more than 5 years of experience at companies in the US and Mexico, from internal systems to apps and interactive experiences.',
-      'I am not a graphic designer. What I deliver are functional, easy-to-use interfaces.'
+      'What I deliver are functional, easy-to-use interfaces.'
     ],
     languages: 'I work in Spanish and in English.'
   },
   contact: {
     tag: 'CONTACT',
     title: 'Tell me what you need',
-    sub: 'Write to me in your own words, no jargon. I answer you myself.',
+    sub: 'Write to me in your own words. I answer you myself.',
     emailLabel: 'Or write to me at',
     email: 'manuelalejandrosac@gmail.com',
     name: 'Name',
@@ -324,6 +334,7 @@ const en: typeof es = {
     hide: 'Hide Crocky',
     show: 'Show Crocky',
     name: 'Crocky',
+    loading: 'Loading Crocky…',
     greeting: 'Hi! I am Crocky. What would you like to solve?',
     petLines: ['Hehe, thanks!', 'I like that!'],
     sections: {

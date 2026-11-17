@@ -13,6 +13,7 @@ const portraitHost = ref<HTMLElement | null>(null);
 const collapsed = ref(false);
 const bubbleOpen = ref(false);
 const failed = ref(false);
+const ready = ref(false);
 const base = ref(props.t.greeting);
 const hover = ref<string | null>(null);
 const text = computed(() => hover.value ?? base.value);
@@ -59,14 +60,20 @@ async function startPortrait() {
     }
     stage = s;
     s.ready.then((ok) => {
-        if (!ok) failed.value = true;
-        else if (!rig!.prefersReduced() && s === stage) s.blink();
+        if (s !== stage) return;
+        if (!ok) {
+            failed.value = true;
+            return;
+        }
+        ready.value = true;
+        if (!rig!.prefersReduced()) s.blink();
     });
     applyAim();
 }
 function stopPortrait() {
     stage?.dispose();
     stage = null;
+    ready.value = false;
 }
 
 function collapse() {
@@ -208,6 +215,10 @@ onBeforeUnmount(() => {
                 <button class="portrait" type="button" :aria-label="t.pet" @click="pet">
                     <span ref="portraitHost" class="portrait__canvas"></span>
                     <span v-if="failed" class="portrait__fallback">{{ t.name }}</span>
+                    <span v-else-if="!ready" class="portrait__fallback" role="status">
+                        <span class="spinner" aria-hidden="true"></span>
+                        <span class="sr-only">{{ t.loading }}</span>
+                    </span>
                 </button>
                 <button class="badge" type="button" :aria-label="t.hide" @click="collapse">
                     <svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true">
@@ -315,6 +326,10 @@ onBeforeUnmount(() => {
     place-items: center;
     color: var(--color-text-muted);
     font-family: var(--font-heading);
+}
+.portrait__fallback .spinner {
+    width: 1.75rem;
+    height: 1.75rem;
 }
 /* The close badge sits at 45 degrees on the top right of the circle. */
 .badge {
